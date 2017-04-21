@@ -1,2 +1,2 @@
 angular
-  .module('tsa', ['ngMaterial'])
+  .module('tsa', ['ngMaterial', 'ngMessages', 'angular-js-xlsx'])

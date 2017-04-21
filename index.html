@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="container">
-      <div class="graphs" ng-controller="TabsController">
+      <div class="tabs" ng-controller="TabsController">
         <md-tabs md-selected="selectedIndex" md-border-bottom>
           <md-tab ng-repeat="tab in tabs"
                   ng-disabled="tab.disabled"
@@ -18,15 +18,16 @@
         </md-tabs>
       </div>
 
-      <h1>{{hello}}</h1>
-      <input type="text" ng-model="hello"/>
-
+      <div class="workbook" ng-controller='WorkbookController'>
+        <js-xls onread="read" onerror="error"></js-xls>
+      </div>
     </div>
     <!--Core Angular components-->
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
     <script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
     <script type="text/javascript" src="bower_components/angular-material/angular-material.js"></script>
+    <script type="text/javascript" src="bower_components/angular-messages/angular-messages.js"></script>
 
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -34,5 +35,6 @@
     <script src="https://unpkg.com/angular-js-xlsx/angular-js-xlsx.js"></script><!--Angular directive for SheetJs -->
     <script type="text/javascript" src="js/app/app.js"></script>
     <script type="text/javascript" src="js/app/controllers/TabsController.js"></script>
+    <script type="text/javascript" src="js/app/controllers/WorkbookController.js"></script>
   </body>
 </html>
