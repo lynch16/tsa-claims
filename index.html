@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="container">
-      <div class="graphs" ng-controller="GraphsController">
+      <div class="graphs" ng-controller="TabsController">
         <md-tabs md-selected="selectedIndex" md-border-bottom>
           <md-tab ng-repeat="tab in tabs"
                   ng-disabled="tab.disabled"
@@ -33,6 +33,6 @@
     <script type="text/javascript" src="bower_components/js-xlsx/dist/xlsx.core.min.js"></script><!--SheetJs library-->
     <script src="https://unpkg.com/angular-js-xlsx/angular-js-xlsx.js"></script><!--Angular directive for SheetJs -->
     <script type="text/javascript" src="js/app/app.js"></script>
-    <script type="text/javascript" src="js/app/controllers/GraphsController.js"></script>
+    <script type="text/javascript" src="js/app/controllers/TabsController.js"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-function GraphsController($scope) {
+function TabsController($scope) {
   var tabs = [
       { title: 'One', content: 'Tab one content' },
       { title: 'Two', content: 'Tab two content' }
@@ -14,4 +14,4 @@ function GraphsController($scope) {
 }
 angular
   .module('tsa')
-  .controller('GraphsController', GraphsController)
+  .controller('TabsController', TabsController)
