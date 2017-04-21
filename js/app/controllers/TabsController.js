@@ -13,9 +13,10 @@ function TabsController($scope, ClaimsDataService) {
     previous = selected;
     selected = tabs[current];
   });
-  $scope.$watch('values.claims', (current, old) => {
-    $scope.tabs[0].content = $scope.values.claims
-  })
+  $scope.$watch('values', (current, old) => {
+    $scope.tabs[0].content = $scope.values.claims;
+    $scope.tabs[1].content = $scope.values.months;
+  }, true)
 }
 
 angular

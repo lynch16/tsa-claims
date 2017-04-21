@@ -1,26 +1,43 @@
 function ClaimsDataService() {
   let data = {
     claims: null,
-    claimsByMonth: {}
+    averageLossAllAirlines: {}
   }
 
   const loadData = (claimsArray) => {
-    data.claims = claimsArray;
+    data.claims = organizeByMonth(claimsArray);
+    calcAvgLossAllAirlines();
   }
 
   const getData = () => {
     return data;
   }
 
-  const byMonth = (claims) => {
-    const numClaims = claims.length; /*get total number of claims */
+  const organizeByMonth = (claims) => {
+    let claimsByMonth = {};
+    const numClaims = claims.length; //get total number of claims
     for (let i = 0; i < numClaims; i++ ){
       let date = claims[i]['Incident Date']
-      date = date.substring(date.indexOf('-') + 1, date.length) /*[DD, MM, YY]*/
-      if (typeof data.claimsByMonth[date] === 'undefined'){
-        data.claimsByMonth[date] = [ claims[i] ]; /*create new array of claims if new month*/
+      date = date.substring(date.indexOf('-') + 1, date.length) //[DD, MM, YY]
+      if (typeof claimsByMonth[date] === 'undefined'){
+        claimsByMonth[date] = [ claims[i] ]; //create new array of claims if new month
       } else {
-        data.claimsByMonth[date].push(claims[i]); /*add to existing month of claims*/
+        claimsByMonth[date].push(claims[i]); //add to existing month of claims
+      }
+    }
+    return claimsByMonth;
+  }
+
+  const calcAvgLossAllAirlines = () => {
+    if (data.claims !== null){ //make sure claims have been loaded
+      for (let month in data.claims){
+        data.averageLossAllAirlines[month] = 0; //sum for each month
+        data.claims[month].forEach((claim) => {
+          if (claim['Close Amount'] !== '-') {
+            data.averageLossAllAirlines[month] += parseFloat(claim['Close Amount'].replace('$', ""));
+          }
+        });
+        data.averageLossAllAirlines[month] = (data.averageLossAllAirlines[month]/data.claims[month].length).toFixed(2); //get average for month
       }
     }
   }
@@ -28,8 +45,7 @@ function ClaimsDataService() {
   return {
     data: data,
     getData: getData,
-    loadData: loadData,
-    byMonth: byMonth
+    loadData: loadData
   }
 }
 
