@@ -18,10 +18,6 @@
         </md-tabs>
       </div>
 
-      <div ng-controller="OneCtrl">
-        value: {{values.claims}}
-      </div>
-
       <div class="workbook" ng-controller='WorkbookController'>
         <js-xls onread="read" onerror="error"></js-xls>
       </div>
@@ -40,9 +36,8 @@
     <script type="text/javascript" src="js/app/app.js"></script>
     <script type="text/javascript" src="js/app/controllers/TabsController.js"></script>
     <script type="text/javascript" src="js/app/controllers/WorkbookController.js"></script>
-    <script type="text/javascript" src="js/app/controllers/OneCtrl.js"></script>
-
     <script type="text/javascript" src="js/app/services/ClaimsDataService.js"></script>
+    <script type="text/javascript" src="js/app/services/WorkbookService.js"></script>
 
   </body>
 </html>

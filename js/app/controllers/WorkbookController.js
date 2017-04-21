@@ -1,13 +1,7 @@
-function WorkbookController($scope, ClaimsDataService) {
+function WorkbookController($scope, ClaimsDataService, WorkbookService) {
   $scope.read = (workbook) => {
-    workbook.SheetNames.forEach((sheetName) => {
-      let jsonArray = XLS.utils.sheet_to_json(workbook.Sheets[sheetName]);
-      if (jsonArray.length > 0){
-        ClaimsDataService.loadData(jsonArray);
-        console.log('data loaded');
-        $scope.$apply();
-      }
-    });
+    WorkbookService.read(workbook);
+    $scope.$apply(); 
   }
   $scope.error = (err) => console.log(err);
 }

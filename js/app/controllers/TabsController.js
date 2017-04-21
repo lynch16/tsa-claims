@@ -1,7 +1,9 @@
-function TabsController($scope) {
+function TabsController($scope, ClaimsDataService) {
+  $scope.values = ClaimsDataService.getData();
+
   let tabs = [
-      { title: 'One', content: 'Tab one content' },
-      { title: 'Two', content: 'Tab two content' }
+      { title: '$ Lost/Month', content: null },
+      { title: 'Avg Claims/Month', content: null }
     ],
     selected = null,
     previous = null;
@@ -10,8 +12,12 @@ function TabsController($scope) {
   $scope.$watch('selectedIndex', (current, old) => {
     previous = selected;
     selected = tabs[current];
+  });
+  $scope.$watch('values.claims', (current, old) => {
+    $scope.tabs[0].content = $scope.values.claims
   })
 }
+
 angular
   .module('tsa')
   .controller('TabsController', TabsController)

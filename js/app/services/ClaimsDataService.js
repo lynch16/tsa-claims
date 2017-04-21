@@ -3,11 +3,11 @@ function ClaimsDataService() {
     claims: null
   }
 
-  let loadData = (claimsArray) => {
+  const loadData = (claimsArray) => {
     data.claims = claimsArray;
   }
 
-  let getData = () => {
+  const getData = () => {
     return data;
   }
 
