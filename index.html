@@ -1,22 +1,38 @@
-<html ng-app="tsa">
+<html ng-app="tsa" ng-cloak>
   <head lang="en">
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/app.css">
     <title>TSA Claims</title>
   </head>
   <body>
     <div class="container">
+      <div class="graphs" ng-controller="GraphsController">
+        <md-tabs md-selected="selectedIndex" md-border-bottom>
+          <md-tab ng-repeat="tab in tabs"
+                  ng-disabled="tab.disabled"
+                  label="{{tab.title}}">
+            <div ng-bind="tab.content"></div>
+          </md-tab>
+        </md-tabs>
+      </div>
+
       <h1>{{hello}}</h1>
       <input type="text" ng-model="hello"/>
+
     </div>
-    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-    <script type="text/javascript" src="js/angular-ui-router.min.js"></script>
-    <script type="text/javascript" src="js/xlsx.core.min.js"></script><!--SheetJs library-->
-    <script type="text/javascript" src="https://unpkg.com/angular-js-xlsx/angular-js-xlsx.js"></script><!--Angular directive for SheetJs -->
-    <script src="js/app.js"></script>
+    <!--Core Angular components-->
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
+    <script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
+    <script type="text/javascript" src="bower_components/angular-material/angular-material.js"></script>
+
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="bower_components/js-xlsx/dist/xlsx.core.min.js"></script><!--SheetJs library-->
+    <script src="https://unpkg.com/angular-js-xlsx/angular-js-xlsx.js"></script><!--Angular directive for SheetJs -->
+    <script type="text/javascript" src="js/app/app.js"></script>
+    <script type="text/javascript" src="js/app/controllers/GraphsController.js"></script>
   </body>
 </html>
