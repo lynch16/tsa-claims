@@ -1,5 +1,5 @@
 function TabsController($scope) {
-  var tabs = [
+  let tabs = [
       { title: 'One', content: 'Tab one content' },
       { title: 'Two', content: 'Tab two content' }
     ],

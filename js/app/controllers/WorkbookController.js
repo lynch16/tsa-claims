@@ -1,13 +1,13 @@
-function WorkbookController($scope) {
+function WorkbookController($scope, ClaimsDataService) {
   $scope.read = (workbook) => {
-    var result = {};
     workbook.SheetNames.forEach((sheetName) => {
-      var json = XLS.utils.sheet_to_json(workbook.Sheets[sheetName]);
-      if (json.length > 0){
-        result[sheetName] = json;
+      let jsonArray = XLS.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      if (jsonArray.length > 0){
+        ClaimsDataService.loadData(jsonArray);
+        console.log('data loaded');
+        $scope.$apply();
       }
     });
-    console.log(result);
   }
   $scope.error = (err) => console.log(err);
 }
