@@ -13,7 +13,15 @@
           <md-tab ng-repeat="tab in tabs"
                   ng-disabled="tab.disabled"
                   label="{{tab.title}}">
-            <div ng-bind="tab.content"></div>
+
+              <div ng-controller="GraphController">
+                <select ng-model="selectedYear" ng-options="x for x in years" ng-change="updateGraph()">
+
+                </select>
+                <canvas id="line" class="chart chart-line" chart-data="data"
+                  chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
+                </canvas>
+              </div>
           </md-tab>
         </md-tabs>
       </div>
@@ -35,10 +43,11 @@
     <script src="https://unpkg.com/angular-js-xlsx/angular-js-xlsx.js"></script><!--Angular directive for SheetJs -->
     <script type="text/javascript" src="bower_components/chart.js/dist/Chart.js"></script>
     <script type="text/javascript" src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
-    
+
     <script type="text/javascript" src="js/app/app.js"></script>
     <script type="text/javascript" src="js/app/controllers/TabsController.js"></script>
     <script type="text/javascript" src="js/app/controllers/WorkbookController.js"></script>
+    <script type="text/javascript" src="js/app/controllers/GraphController.js"></script>
     <script type="text/javascript" src="js/app/services/ClaimsDataService.js"></script>
     <script type="text/javascript" src="js/app/services/WorkbookService.js"></script>
 
