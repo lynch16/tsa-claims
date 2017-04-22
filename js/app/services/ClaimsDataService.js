@@ -5,7 +5,7 @@ function ClaimsDataService() {
   }
 
   const loadData = (claimsArray) => {
-    data.claims = organizeByMonth(claimsArray);
+    data.claims = organizeByDate(claimsArray);
     data.avgTotalLoss = calcAvgLossAllAirlines();
   }
 
@@ -13,17 +13,18 @@ function ClaimsDataService() {
     return data;
   }
 
-  const organizeByMonth = (claims) => {
+  const organizeByDate = (claims) => {                 //arranges array of objects into JSON object organized by date
     let results = {};
-    const numClaims = claims.length;                   //get total number of claims
-    for (let i = 0; i < numClaims; i++ ){
-      let date = claims[i]['Incident Date'].split("-") //split date string by '-'
-      date = Date.parse(date[1] + '1, 20' + date[2])   //save as date object
+    const numClaims = claims.length;                   //total number of claims for speed
+    for (let i = 0; i < numClaims; i++) {
+      if( isNaN(parseInt(claims[i]['Claim Number'])) ) { break; } //stop read if the Claim Number isn't a number
+      let date = Date.parse( claims[i]['Incident Date'].split(" ")[0] ); //if Incident Date is date & time, only use date
       let year = new Date(date).getFullYear();
       let month = new Date(date).getMonth() + 1;       //add one to month per Date Object
+
       if (!results[year]) {                            //if year hasn't been set yet
-        results[year] = {};                            // make new object
-        results[year][month] = [ claims[i] ];          //assign claim arry
+        results[year] = {};                            //make new object
+        results[year][month] = [ claims[i] ];          //assign claim array
       } else {
         if (!results[year][month]) {                   //if month in that year hasn't been set yet
           results[year][month] = [ claims[i] ];        //assign claim array
@@ -32,12 +33,12 @@ function ClaimsDataService() {
         }
       }
     }
-    return results;
+    return results;                                    //JSON object arranged by date
   }
 
-  const calcAvgLossAllAirlines = () => { //relies on being organized by month
-    if (data.claims !== null){ //make sure claims have been loaded
-      avgTotalLoss = {};
+  const calcAvgLossAllAirlines = () => {              //requires claims to be JSON object organized by date
+    if ((data.claims !== null) && (typeof data.claims === 'object')){ //make sure claims have been loaded and converted to JSON object
+      let avgTotalLoss = {};
       for (let year in data.claims) {
         avgTotalLoss[year] = {};
         for (let month in data.claims[year]) {

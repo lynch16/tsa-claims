@@ -9,19 +9,20 @@
   <body>
     <div class="container">
       <div class="tabs" ng-controller="TabsController">
-        <md-tabs md-selected="selectedIndex" md-border-bottom>
+        <md-tabs md-selected="selectedIndex" md-dynamic-height md-border-bottom>
           <md-tab ng-repeat="tab in tabs"
                   ng-disabled="tab.disabled"
                   label="{{tab.title}}">
+              <md-tab-body>
+                <div ng-controller="GraphController">
+                  <select ng-model="selectedYear" ng-options="x for x in years" ng-change="loadGraph()">
 
-              <div ng-controller="GraphController">
-                <select ng-model="selectedYear" ng-options="x for x in years" ng-change="updateGraph()">
-
-                </select>
-                <canvas id="line" class="chart chart-line" chart-data="data"
-                  chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
-                </canvas>
-              </div>
+                  </select>
+                  <canvas id="line" class="chart chart-line" chart-data="data"
+                    chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
+                  </canvas>
+                </div>
+              </md-tab-body>
           </md-tab>
         </md-tabs>
       </div>

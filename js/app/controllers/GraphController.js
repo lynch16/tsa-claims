@@ -1,15 +1,27 @@
 function GraphController($scope, ClaimsDataService){
+
+  const setSeries = (data) => {
+    let series = []
+    data.forEach((entry) => {
+      for (let key in entry) {
+        series.push(key);
+      }
+    });
+    return series;
+  }
+
+  const setData = (data) => {
+    let results = [];
+    data.forEach((lineGraph) => {
+      for (let key in lineGraph) {
+        results.push(lineGraph[key])
+      }
+    });
+     return results
+  }
+
   $scope.values = ClaimsDataService.getData();
-  $scope.years = [];
-  $scope.selectedYear = '2014';
-  $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"];
-  $scope.series = ['Series A'];
-  $scope.data = [
-    [65, 59, 80, 81, 56, 55, 40]
-  ];
-  $scope.onClick = function (points, evt) {
-    console.log(points, evt);
-  };
+  $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }];
   $scope.options = {
     scales: {
@@ -23,17 +35,24 @@ function GraphController($scope, ClaimsDataService){
       ]
     }
   }
-  $scope.updateGraph = () => {
+
+  $scope.loadGraph = () => {
     if ($scope.values.claims !== null) {
-      $scope.years = Object.keys(ClaimsDataService.getData().avgTotalLoss);
-      $scope.data = Object.values(ClaimsDataService.getData().avgTotalLoss[$scope.selectedYear]);
-      console.log($scope.years);
-      console.log($scope.data);
+      $scope.years = Object.keys($scope.values.avgTotalLoss);
+
+      let data = [
+        { 'Global Avg Loss': Object.values($scope.values.avgTotalLoss[$scope.selectedYear || $scope.years[0]]) }
+      ]
+      $scope.series = setSeries(data);
+      $scope.data = setData(data);
     }
   }
+
   $scope.$watch('values', (current, old) => {
-    $scope.updateGraph();
+    if (current !== old) { $scope.loadGraph() }
   }, true);
+
+
 }
 angular
   .module('tsa')

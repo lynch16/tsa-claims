@@ -1,5 +1,6 @@
 function WorkbookService(ClaimsDataService) {
-  const loadLocalData = () => {
+  const loadLocalData = () => { //load XLS data from local file for when app starts
+
     /* set up XMLHttpRequest */
     const url = "data/claims-2014.xls";
     let oReq = new XMLHttpRequest();
@@ -24,7 +25,7 @@ function WorkbookService(ClaimsDataService) {
   }
 
   const read = (workbook) => {
-    /*Convert workbook object into JSON */
+    /*Convert workbook object into array of JSON objects*/
     workbook.SheetNames.forEach((sheetName) => {
       let jsonArray = XLS.utils.sheet_to_json(workbook.Sheets[sheetName]);
       if (jsonArray.length > 0){
