@@ -5,6 +5,7 @@ function ClaimsDataService() {
   }
 
   const loadData = (claimsArray) => {
+    console.log('loading...');
     data.claims = organizeByDate(claimsArray);
     data.avgTotalLoss = calcAvgLossAllAirlines();
   }

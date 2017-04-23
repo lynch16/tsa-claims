@@ -1,59 +1,41 @@
-function GraphController($scope, ClaimsDataService){
+function GraphController($timeout, ClaimsDataService, GraphService) {
+  this.values = ClaimsDataService.getData();
 
-  const setSeries = (data) => {
-    let series = []
-    data.forEach((entry) => {
-      for (let key in entry) {
-        series.push(key);
-      }
-    });
-    return series;
-  }
-
-  const setData = (data) => {
-    let results = [];
-    data.forEach((lineGraph) => {
-      for (let key in lineGraph) {
-        results.push(lineGraph[key])
-      }
-    });
-     return results
-  }
-
-  $scope.values = ClaimsDataService.getData();
-  $scope.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }];
-  $scope.options = {
-    scales: {
-      yAxes: [
-        {
-          id: 'y-axis-1',
-          type: 'linear',
-          display: true,
-          position: 'left'
-        }
-      ]
-    }
-  }
-
-  $scope.loadGraph = () => {
-    if ($scope.values.claims !== null) {
-      $scope.years = Object.keys($scope.values.avgTotalLoss);
-
+  this.loadGraph = () => {
+    if (this.values.claims !== null) {
+      this.years = Object.keys(this.values.avgTotalLoss);
       let data = [
-        { 'Global Avg Loss': Object.values($scope.values.avgTotalLoss[$scope.selectedYear || $scope.years[0]]) }
+        { 'Global Avg Loss': Object.values(this.values.avgTotalLoss[this.selectedYear || this.years[0]]) }
       ]
-      $scope.series = setSeries(data);
-      $scope.data = setData(data);
+      this.series = GraphService.setSeries(data);
+      this.data = GraphService.setData(data);
     }
   }
 
-  $scope.$watch('values', (current, old) => {
-    if (current !== old) { $scope.loadGraph() }
-  }, true);
+  this.$onInit = () => {
+    this.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    this.datasetOverride = [{ yAxisID: 'y-axis-1' }];
+    this.options = {
+      scales: {
+        yAxes: [
+          {
+            id: 'y-axis-1',
+            type: 'linear',
+            display: true,
+            position: 'left'
+          }
+        ]
+      }
+    }
+  }
 
-
+  $timeout(() => {
+    if(this.values.claims !== null) {
+      this.loadGraph();
+    }
+  }, 500);
 }
+
 angular
   .module('tsa')
   .controller('GraphController', GraphController)

@@ -8,18 +8,18 @@
   </head>
   <body>
     <div class="container">
-      <div class="tabs" ng-controller="TabsController">
+      <div class="tabs" ng-controller="TabsController as tabs">
         <md-tabs md-selected="selectedIndex" md-dynamic-height md-border-bottom>
           <md-tab ng-repeat="tab in tabs"
                   ng-disabled="tab.disabled"
                   label="{{tab.title}}">
               <md-tab-body>
-                <div ng-controller="GraphController">
-                  <select ng-model="selectedYear" ng-options="x for x in years" ng-change="loadGraph()">
 
-                  </select>
-                  <canvas id="line" class="chart chart-line" chart-data="data"
-                    chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride" chart-click="onClick">
+                <!-- <line-graph values="$parent.values"></line-graph> -->
+                <div ng-controller="GraphController as ctrl">
+                  <select ng-model="ctrl.selectedYear" ng-options="x for x in ctrl.years" ng-change="ctrl.loadGraph()"></select>
+                  <canvas id="line" class="chart chart-line" chart-data="ctrl.data"
+                    chart-labels="ctrl.labels" chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick">
                   </canvas>
                 </div>
               </md-tab-body>
@@ -51,6 +51,8 @@
     <script type="text/javascript" src="js/app/controllers/GraphController.js"></script>
     <script type="text/javascript" src="js/app/services/ClaimsDataService.js"></script>
     <script type="text/javascript" src="js/app/services/WorkbookService.js"></script>
+    <script type="text/javascript" src="js/app/services/GraphService.js"></script>
+    <script type="text/javascript" src="js/app/components/lineGraph.js"></script>
 
   </body>
 </html>

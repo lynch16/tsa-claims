@@ -1,5 +1,5 @@
 function TabsController($scope, ClaimsDataService) {
-  $scope.values = ClaimsDataService.getData();
+  // $scope.values = ClaimsDataService.getData();
 
   let tabs = [
       { title: '$ Lost/Month', content: null },
