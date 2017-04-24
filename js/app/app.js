@@ -1,5 +1,20 @@
 angular
-  .module('tsa', ['ngMaterial', 'ngMessages', 'angular-js-xlsx', 'chart.js'])
+  .module('tsa', ['ui.router', 'ngMaterial', 'ngMessages', 'angular-js-xlsx', 'chart.js'])
+  .config(($stateProvider, $urlRouterProvider) => {
+
+    $stateProvider
+      .state('root', {
+        url: '/',
+        template: '<customgraph></customgraph>',
+        resolve: {
+          values: (ClaimsDataService) => {
+            return ClaimsDataService.waitData();
+          }
+        }
+      })
+      $urlRouterProvider.otherwise('/')
+
+  })
   .run(function(WorkbookService){
-    WorkbookService.loadLocalData();
+    WorkbookService.loadLocalData('data/claims-2014.xls');
   })

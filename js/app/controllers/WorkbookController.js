@@ -1,4 +1,4 @@
-function WorkbookController($scope, ClaimsDataService, WorkbookService) {
+function WorkbookController($scope, WorkbookService) {
   $scope.read = (workbook) => {
     WorkbookService.read(workbook);
     $scope.$apply();

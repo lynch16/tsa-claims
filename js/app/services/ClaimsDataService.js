@@ -1,13 +1,24 @@
-function ClaimsDataService() {
+function ClaimsDataService($q) {
   let data = {
     claims: null,
     avgTotalLoss: {}
   }
 
   const loadData = (claimsArray) => {
-    console.log('loading...');
     data.claims = organizeByDate(claimsArray);
     data.avgTotalLoss = calcAvgLossAllAirlines();
+  }
+
+  const waitData = () => {
+    let deferred = $q.defer();
+    setTimeout(() => {
+      if (true) {
+        deferred.resolve(data);
+      } else {
+        deferred.reject(console.log('err'));
+      }
+    }, 1000);
+    return deferred.promise;
   }
 
   const getData = () => {
@@ -60,7 +71,8 @@ function ClaimsDataService() {
   return {
     data: data,
     getData: getData,
-    loadData: loadData
+    loadData: loadData,
+    waitData: waitData
   }
 }
 

@@ -1,21 +1,24 @@
-function GraphController($timeout, ClaimsDataService, GraphService) {
-  this.values = ClaimsDataService.getData();
+function GraphController($scope, ClaimsDataService, GraphService) {
+  let ctrl = this;
 
-  this.loadGraph = () => {
-    if (this.values.claims !== null) {
-      this.years = Object.keys(this.values.avgTotalLoss);
+  ctrl.loadGraph = () => {
+    if (ctrl.values.claims !== null) {
+      ctrl.years = Object.keys(ctrl.values.avgTotalLoss);
       let data = [
-        { 'Global Avg Loss': Object.values(this.values.avgTotalLoss[this.selectedYear || this.years[0]]) }
+        { 'Global Avg Loss': Object.values(ctrl.values.avgTotalLoss[ctrl.selectedYear || ctrl.years[0]]) }
+        // { 'Global Avg Loss': Object.values(ctrl.values.avgTotalLoss[ctrl.selectedYear || ctrl.years[0]]) }
       ]
-      this.series = GraphService.setSeries(data);
-      this.data = GraphService.setData(data);
+      ctrl.series = GraphService.setSeries(data);
+      ctrl.data = GraphService.setData(data);
     }
   }
 
-  this.$onInit = () => {
-    this.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    this.datasetOverride = [{ yAxisID: 'y-axis-1' }];
-    this.options = {
+  ctrl.$onInit = () => {
+    ctrl.values = ClaimsDataService.getData();
+    ctrl.loadGraph();
+    ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
+    ctrl.options = {
       scales: {
         yAxes: [
           {
@@ -29,11 +32,11 @@ function GraphController($timeout, ClaimsDataService, GraphService) {
     }
   }
 
-  $timeout(() => {
-    if(this.values.claims !== null) {
-      this.loadGraph();
-    }
-  }, 500);
+  ctrl.$onChanges = () => {
+    console.log('change');
+    ctrl.values = ClaimsDataService.getData();
+    ctrl.loadGraph();
+  }
 }
 
 angular

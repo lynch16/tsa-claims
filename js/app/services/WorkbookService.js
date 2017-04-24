@@ -1,8 +1,8 @@
-function WorkbookService(ClaimsDataService) {
-  const loadLocalData = () => { //load XLS data from local file for when app starts
+function WorkbookService($q, ClaimsDataService) {
 
+  const loadLocalData = (fileLocation) => { //load XLS data from local file for when app starts
     /* set up XMLHttpRequest */
-    const url = "data/claims-2014.xls";
+    const url = fileLocation;
     let oReq = new XMLHttpRequest();
     oReq.open("GET", url, true);
     oReq.responseType = "arraybuffer";

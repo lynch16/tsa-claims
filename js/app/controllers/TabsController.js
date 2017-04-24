@@ -1,9 +1,8 @@
 function TabsController($scope, ClaimsDataService) {
-  // $scope.values = ClaimsDataService.getData();
 
   let tabs = [
-      { title: '$ Lost/Month', content: null },
-      { title: 'Avg Claims/Month', content: null }
+      { title: '$ Lost/Month', content: 'line' },
+      { title: 'Avg Claims/Month', content: 'bar' }
     ],
     selected = null,
     previous = null;
