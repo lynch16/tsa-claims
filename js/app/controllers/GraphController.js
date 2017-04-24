@@ -8,12 +8,17 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object, insert type here
 
       ctrl.years = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'))
-      ctrl.selectedYear = ctrl.selectedYear || ctrl.years[2]
-      groupedData = ClaimsDataService.gatherClaimValues(groupedData)
+      ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
+      if(ctrl.type === 'line'){
+        groupedData = ClaimsDataService.gatherClaimValues(groupedData)
+      } else {
+        //load bar data
+      }
       let data = []
       for ( let group in groupedData ) {
-        if (!!groupedData[group][ctrl.selectedYear]){
-          data.push( {[group]: groupedData[group][ctrl.selectedYear]} );
+        if (!!groupedData[group][ctrl.selectedYear]){                    //if there is data for selected group this year
+          data.push( {[group]: groupedData[group][ctrl.selectedYear]} ); //add data object to array of data
+                                                                         //(eg. {'Southwest'}: [{'0': 56.4}, {'1': 988.74}, ...] )
         }
       }
       ctrl.series = GraphService.setSeries(data);
