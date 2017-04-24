@@ -1,4 +1,4 @@
-function GraphController($scope, ClaimsDataService, GraphService) {
+function GraphController(ClaimsDataService, GraphService) {
   let ctrl = this;
 
   ctrl.loadGraph = () => {
