@@ -5,7 +5,7 @@ angular
     $stateProvider
       .state('root', {
         url: '/',
-        template: '<customgraph></customgraph>',
+        template: '<customgraph type="{{tab.content}}"></customgraph>',
         resolve: {
           values: (ClaimsDataService) => {
             return ClaimsDataService.waitData();

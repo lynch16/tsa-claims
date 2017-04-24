@@ -4,6 +4,7 @@ function customgraph($compile) {
     controller: GraphController,
     controllerAs: 'ctrl',
     bindToController: {
+      type: "@",
       data: "<",
       labels: "<",
       series: "<"

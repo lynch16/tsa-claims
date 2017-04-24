@@ -9,14 +9,22 @@ function GraphService() {
     return series;
   }
 
-  const setData = (data) => {
-    let results = [];
-    data.forEach((lineGraph) => {
-      for (let key in lineGraph) {
-        results.push(lineGraph[key])
+  const setData = (labels, data) => {
+    let extractedData = [];
+    data.forEach((dataset) => {
+      let results = []
+      for (let key in dataset) {  //key is airline, airport, etc.
+        labels.forEach( (label, index)  => { //for each month on the graph
+          if (!!dataset[key][index + 1]){ //see if that airline has a value for that month
+            results.push(dataset[key][index+1]) //if so, add it
+          } else {
+            results.push(0) //otherwise, send 0
+          }
+        });
       }
+      extractedData.push(results) //build nested array
     });
-     return results
+    return extractedData
   }
 
   return {
