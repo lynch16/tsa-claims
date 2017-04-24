@@ -40,7 +40,7 @@ function GraphController($scope, ClaimsDataService, GraphService) {
         }
       })
     }
-    return chartData; //array of objects
+    return chartData; //array of objects [ {Airline: ClaimVal } ]
   }
   //
   // ctrl.$onChanges = () => {
