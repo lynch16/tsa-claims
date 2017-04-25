@@ -4,7 +4,13 @@ function ClaimsDataService($q, $filter) {
   }
 
   const loadData = (claimsArray) => {
-    data.claims = claimsArray;
+    let claims = []
+    claimsArray.forEach((claim) => {
+      if (!isNaN(claim["Claim Number"])) {
+        claims.push(claim)
+      }
+    });
+    data.claims = claims;
   }
 
   const waitData = () => {
