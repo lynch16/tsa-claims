@@ -10,9 +10,9 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       ctrl.years = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'))
       ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
       if(ctrl.type === 'line'){
-        groupedData = ClaimsDataService.gatherClaimValues(groupedData)
+        groupedData = ClaimsDataService.gatherClaimValues(groupedData)[0]
       } else {
-        //load bar data
+        groupedData = ClaimsDataService.gatherClaimValues(groupedData)[1]
       }
       let data = []
       for ( let group in groupedData ) {
@@ -43,6 +43,9 @@ function GraphController($filter, ClaimsDataService, GraphService) {
     }
     ctrl.values = ClaimsDataService.getData();
     ctrl.loadGraph();
+    ctrl.refreshGraph = () => {
+      ctrl.loadGraph();
+    }
   }
 
   //

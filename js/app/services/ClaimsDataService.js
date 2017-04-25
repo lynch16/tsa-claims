@@ -24,24 +24,44 @@ function ClaimsDataService($q, $filter) {
   }
 
   const gatherClaimValues = (groupedData) => {
-    let result = {}
+    let values = {};
+    let counts = {};
     for (let groupKey in groupedData) {
       let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date');  //order data by date for chart
       for (let year in orderedGroup){
         for (let month in orderedGroup[year]) {
           let claimValues = []
+          let count = 0
           for (let i = 0; i < orderedGroup[year][month].length; i++){
+            count ++;
             let val = parseFloat( orderedGroup[year][month][i]['Close Amount'].replace('$', "").trim() )
             if (val > 0) {
               claimValues.push(val);
             }
           }
+
+          if (!counts[groupKey]){ //build or add to counts object
+            counts[groupKey] = {
+              [year]: {
+                [month]: count
+              }
+            }
+          } else if (!counts[groupKey][year]) {
+            counts[groupKey][year] = {
+                [month]: count
+            }
+          } else {
+            counts[groupKey][year][month] = count
+          }
+
           if (claimValues.length > 0){
             let avg = claimValues.reduce( (total, amt, index, array) => { //find average of that airline's monthly claim value
               total += amt;
               if (index === array.length-1){
-                return (total/array.length).toFixed(2)/1; //toFixed makes strings from floating decimals.
-                                                          //divide by 1 to make them numbers gain
+                return (total/count).toFixed(2)/1;     /* toFixed makes strings from floating decimals.
+                                                          divide by 1 to make them numbers gain
+                                                          count is all claims regardless of value.
+                                                          use array.length for avg of only claims w/ values */
               } else {
                 return total;
               }
@@ -49,24 +69,24 @@ function ClaimsDataService($q, $filter) {
             if (groupKey === '-'){ //Fix '-' fields
               groupKey = 'Unknown';
             }
-            if (!result[groupKey]){ //build or add to result object
-              result[groupKey] = {
+            if (!values[groupKey]){ //build or add to values object
+              values[groupKey] = {
                 [year]: {
                   [month]: avg
                 }
               }
-            } else if (!result[groupKey][year]) {
-              result[groupKey][year] = {
+            } else if (!values[groupKey][year]) {
+              values[groupKey][year] = {
                   [month]: avg
               }
             } else {
-              result[groupKey][year][month] = avg
+              values[groupKey][year][month] = avg
             }
           }
         }
       }
     }
-    return result;
+    return [values, counts];
   }
 
   return {
