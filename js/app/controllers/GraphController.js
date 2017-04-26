@@ -6,29 +6,32 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   ctrl.loadGraph = () => {
     if (ctrl.values.claims !== null) {
       let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object, insert type here
-      groupedData = ClaimsDataService.valuesByMonth(groupedData)
+      ctrl.labels = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'))
+      // ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
 
-      ctrl.years = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'))
-      ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
-      if(ctrl.type === 'line'){
-        groupedData = groupedData['values']
-      } else {
-        groupedData = ClaimsDataService.valuesByMonth(groupedData)[1]
-      }
-      let data = []
-      for ( let group in groupedData ) {
-        if (!!groupedData[group][ctrl.selectedYear]){                    //if there is data for selected group this year
-          data.push( {[group]: groupedData[group][ctrl.selectedYear]} ); //add data object to array of data
-                                                                         //(eg. {'Southwest'}: [{'0': 56.4}, {'1': 988.74}, ...] )
+      let data = [];
+      for (let groupKey in groupedData) {
+        let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date');  //order data by date for chart
+        if (!!orderedGroup) {
+          for (let month in orderedGroup) {
+            orderedGroup[month] = orderedGroup[month].map((claim) => {
+              let val = parseFloat( claim['Close Amount'].replace('$', "").trim() )
+              if (isNaN(val)) return 0
+              return val
+            });
+          }
+          data.push({ [groupKey]: orderedGroup }); //need one more filter here for just values of desired field
         }
       }
+
       ctrl.series = GraphService.setSeries(data);
       ctrl.data = GraphService.setData(ctrl.labels, data);
+      console.log(ctrl.data);
     }
   }
 
   ctrl.$onInit = () => {
-    ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    // ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
     ctrl.options = {
       scales: {

@@ -14,13 +14,13 @@ function GraphService() {
     data.forEach((dataset) => {
       let results = []
       for (let key in dataset) {  //key is airline, airport, etc.
-        labels.forEach( (label, index)  => { //for each month on the graph
-          if (!!dataset[key][index + 1]){ //see if that airline has a value for that month
-            results.push(dataset[key][index+1]) //if so, add it
+        for (let date in dataset[key]) {
+          if (!!dataset[key][date]){ //see if that airline has a value for that month
+            results.push(jStat.sum(dataset[key][date]).toFixed(2));
           } else {
             results.push(0) //otherwise, send 0
           }
-        });
+        }
       }
       extractedData.push(results) //build nested array
     });
