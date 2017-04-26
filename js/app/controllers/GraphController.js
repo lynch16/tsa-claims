@@ -6,13 +6,14 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   ctrl.loadGraph = () => {
     if (ctrl.values.claims !== null) {
       let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object, insert type here
+      groupedData = ClaimsDataService.valuesByMonth(groupedData)
 
       ctrl.years = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'))
       ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
       if(ctrl.type === 'line'){
-        groupedData = ClaimsDataService.gatherClaimValues(groupedData)[0]
+        groupedData = groupedData['values']
       } else {
-        groupedData = ClaimsDataService.gatherClaimValues(groupedData)[1]
+        groupedData = ClaimsDataService.valuesByMonth(groupedData)[1]
       }
       let data = []
       for ( let group in groupedData ) {

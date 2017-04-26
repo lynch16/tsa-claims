@@ -6,14 +6,14 @@ function ClaimsDataService($q, $filter) {
   const loadData = (claimsArray) => {
     let claims = []
     claimsArray.forEach((claim) => {
-      if (!isNaN(claim["Claim Number"])) {
+      if (!isNaN(claim["Claim Number"])) { //remove any claims that don't have a real claim number
         claims.push(claim)
       }
     });
     data.claims = claims;
   }
 
-  const waitData = () => {
+  const waitData = () => {      //returns a promise
     let deferred = $q.defer();
     setTimeout(() => {
       if (true) {
@@ -29,70 +29,60 @@ function ClaimsDataService($q, $filter) {
     return data;
   }
 
-  const gatherClaimValues = (groupedData) => {
+  const valuesByYear = (groupedData) => {
     let values = {};
     let counts = {};
     for (let groupKey in groupedData) {
+      if (groupKey === '-'){ //Fix '-' fields
+        groupKey = 'Unknown';
+      }
+      values[groupKey] = {};
+      counts[groupKey] = {}
       let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date');  //order data by date for chart
       for (let year in orderedGroup){
+        values[groupKey][year] = {}
+        counts[groupKey][year] = {}
         for (let month in orderedGroup[year]) {
-          let claimValues = []
-          let count = 0
+          let  claimValues = []
           for (let i = 0; i < orderedGroup[year][month].length; i++){
-            count ++;
             let val = parseFloat( orderedGroup[year][month][i]['Close Amount'].replace('$', "").trim() )
-            if (val > 0) {
-              claimValues.push(val);
-            }
+            if (isNaN(val)) (val = 0)
+            claimValues.push(val);
           }
-
-          if (!counts[groupKey]){ //build or add to counts object
-            counts[groupKey] = {
-              [year]: {
-                [month]: count
-              }
-            }
-          } else if (!counts[groupKey][year]) {
-            counts[groupKey][year] = {
-                [month]: count
-            }
-          } else {
-            counts[groupKey][year][month] = count
-          }
-
-          if (claimValues.length > 0){
-            let avg = claimValues.reduce( (total, amt, index, array) => { //find average of that airline's monthly claim value
-              total += amt;
-              if (index === array.length-1){
-                return (total/count).toFixed(2)/1;     /* toFixed makes strings from floating decimals.
-                                                          divide by 1 to make them numbers gain
-                                                          count is all claims regardless of value.
-                                                          use array.length for avg of only claims w/ values */
-              } else {
-                return total;
-              }
-            });
-            if (groupKey === '-'){ //Fix '-' fields
-              groupKey = 'Unknown';
-            }
-            if (!values[groupKey]){ //build or add to values object
-              values[groupKey] = {
-                [year]: {
-                  [month]: avg
-                }
-              }
-            } else if (!values[groupKey][year]) {
-              values[groupKey][year] = {
-                  [month]: avg
-              }
-            } else {
-              values[groupKey][year][month] = avg
-            }
-          }
+          values[groupKey][year][month] = jStat.mean(claimValues);
+          counts[groupKey][year][month] = claimValues.length
         }
       }
     }
-    return [values, counts];
+    return { 'values': values, 'counts': counts };
+  }
+
+  const valuesByMonth = (groupedData) => {
+    let values = {};
+    let counts = {};
+    for (let groupKey in groupedData) {
+      if (groupKey === '-'){ //Fix '-' fields
+        groupKey = 'Unknown';
+      }
+      values[groupKey] = {};
+      counts[groupKey] = {}
+      let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date');  //order data by date for chart
+      for (let year in orderedGroup){
+        values[groupKey][year] = {}
+        counts[groupKey][year] = {}
+        for (let month in orderedGroup[year]) {
+          let  claimValues = []
+          for (let i = 0; i < orderedGroup[year][month].length; i++){
+            let val = parseFloat( orderedGroup[year][month][i]['Close Amount'].replace('$', "").trim() )
+            if (isNaN(val)) (val = 0)
+            claimValues.push(val);
+          }
+          values[groupKey][year][month] = jStat.sum(claimValues);
+          counts[groupKey][year][month] = claimValues.length
+        }
+      }
+    }
+    return { 'values': values, 'counts': counts };
   }
 
   return {
@@ -100,7 +90,8 @@ function ClaimsDataService($q, $filter) {
     getData: getData,
     loadData: loadData,
     waitData: waitData,
-    gatherClaimValues: gatherClaimValues
+    valuesByYear: valuesByYear,
+    valuesByMonth: valuesByYear
   }
 }
 
