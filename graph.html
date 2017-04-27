@@ -1,7 +1,6 @@
 <select ng-model="ctrl.rangeType" ng-options="r for r in ctrl.ranges" ng-change="ctrl.refreshGraph()"></select>
 <!-- <select ng-model="ctrl.selectedYear" ng-options="x for x in ctrl.years" ng-change="ctrl.refreshGraph()"></select> -->
 
-</select>
 <div ng-switch on="tab.content" ng-if="ctrl.data.length > 0">
   <div ng-switch-when="line">
     <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"

@@ -9,7 +9,7 @@ function GraphService($filter) {
     return series;
   }
 
-  const setData = (dateRange, data) => {
+  const setTotalValues = (dateRange, data) => {
     let extractedData = [];
     data.forEach((series) => {
       let results = []
@@ -20,13 +20,45 @@ function GraphService($filter) {
           } else {
             results.push(0) //otherwise, send 0
           }
-          let d = new Date(parseInt(date)).getMonth() + ", " + new Date(parseInt(date)).getFullYear()
         })
       }
       extractedData.push(results) //build nested array
     });
     return extractedData
   }
+
+    const setCountAverages = (labels, data) => {
+      let avgCounts = [];
+      let stdDevs = [];
+      data.forEach((series) => {
+        let results = [ [], [] ]
+        for (let key in series) {  //key is airline, airport, etc.
+          for (let i = 0; i < labels.length; i++) { //for each month in labels
+            let monthlyCounts = [];
+            for (let date in series[key]) {         //check all claims
+              let month = new Date(parseInt(date)).getMonth();
+              if (month === i){ //see if that airline has any claims for that month
+                monthlyCounts.push(series[key][date].length); //add the number of claims
+              } 
+            }
+            let avg, stdev;
+            if (monthlyCounts.length > 0) {
+              avg = jStat.mean(monthlyCounts).toFixed(2)
+              stdev = jStat.stdev(monthlyCounts).toFixed(2)
+            } else {
+              avg = 0;
+              stdev = 0;
+            }
+            results[0].push(avg)
+            results[1].push(stdev)
+          } //end labels loop
+        }
+        avgCounts.push(results[0]) //build nested array
+        stdDevs.push(results[1])
+      });
+      return [avgCounts, stdDevs]
+    }
+
 
   const setLabels = (labels, rangeType = 'month') => {
     labels = labels.map((label) => {
@@ -76,7 +108,7 @@ function GraphService($filter) {
         if (groupKey === '-') {
           groupKey = 'Unknown';
         }
-        data.push({ [groupKey]: orderedGroup }); //need one more filter here for just values of desired field
+        data.push({ [groupKey]: orderedGroup }); 
       }
     }
     return data;
@@ -84,7 +116,8 @@ function GraphService($filter) {
 
   return {
     setSeries: setSeries,
-    setData: setData,
+    setTotalValues: setTotalValues,
+    setCountAverages: setCountAverages,
     setLabels: setLabels,
     allDatesInRange: allDatesInRange,
     configureValues: configureValues

@@ -18,22 +18,27 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let max = jStat.max(dates)
       let dateRange = GraphService.allDatesInRange(min, max, ctrl.rangeType); //array of dates in milliseconds since epoch
 
-      let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object
-      let configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
-      // ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
 
-      let labels = GraphService.setLabels(dateRange, ctrl.rangeType);
+      let configuredData  = []
+      if (ctrl.type === 'line') {
+        let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object
+        configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
+        ctrl.labels = GraphService.setLabels(dateRange, ctrl.rangeType);
+        ctrl.data = GraphService.setTotalValues(dateRange, configuredData);
+      } else if (ctrl.type === 'bar') {
+        let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airport Code' );  //returns grouped object
+        configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
+        ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        ctrl.data = GraphService.setCountAverages(ctrl.labels, configuredData)[0];
+      }
+
       let series = GraphService.setSeries(configuredData);
-      let data = GraphService.setData(dateRange, configuredData);
-      ctrl.labels = labels
       ctrl.series = series
-      ctrl.data = data
     }
   }
 
   ctrl.$onInit = () => {
     ctrl.ranges = ["month", "year"]
-    // ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
     ctrl.options = {
       scales: {
