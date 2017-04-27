@@ -28,39 +28,51 @@ function GraphService($filter) {
     return extractedData
   }
 
-  const setLabels = (labels) => {
+  const setLabels = (labels, rangeType = 'month') => {
     labels = labels.map((label) => {
       let d = new Date(label)
-      return (d.getMonth() + 1) + ", " + d.getFullYear();
+      if (rangeType === 'month'){
+        return (d.getMonth() + 1) + ", " + d.getFullYear();
+      } else if (rangeType === 'year') {
+        return d.getFullYear();
+      } else {
+        return d.getDate() + ", " + (d.getMonth() + 1) + ", " + d.getFullYear();
+
+      }
     });
     return labels
   }
 
-  const allDatesInRange = (min, max) => {
+  const allDatesInRange = (min, max, rangeType = 'month') => {
     let dates = [];
     let stop = new Date(parseInt(max));
     let current = new Date(parseInt(min));
     while (current <= stop) {
       dates.push(current.valueOf());
       current = new Date(current);
-      current = current.setMonth(current.getMonth() + 1);
+      if (rangeType === 'month'){
+        current = current.setMonth(current.getMonth() + 1);
+      } else if (rangeType === 'year') {
+        current = current.setFullYear(current.getFullYear() + 1);
+      } else {
+        current = current.getDate() + 1;
+      }
     }
     return dates;
   }
 
-  const configureValues = (groupedData) => {
+  const configureValues = (groupedData, dateType = 'month') => {
     let data = [];
     for (let groupKey in groupedData) {
-      let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date');  //order data by date for chart
+      let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date', dateType);  //order data by date for chart
       if (!!orderedGroup) {
-        dateRange.forEach((d) => {
-          if (!orderedGroup[d]) return;
+        for (let d in orderedGroup) {
           orderedGroup[d] = orderedGroup[d].map((claim) => {
             let val = parseFloat( claim['Close Amount'].replace('$', "").trim() );
             if (isNaN(val)) return 0;
             return val;
           });
-        });
+        }
         if (groupKey === '-') {
           groupKey = 'Unknown';
         }

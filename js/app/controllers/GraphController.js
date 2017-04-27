@@ -6,7 +6,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   ctrl.loadGraph = () => {
     if (ctrl.values.claims !== null) {
 
-      let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'));
+      let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date', 'month'));
       dates.sort((a, b) => {
         date1 = new Date(parseInt(a));
         date2 = new Date(parseInt(b));
@@ -16,14 +16,13 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       });
       let min = jStat.min(dates)
       let max = jStat.max(dates)
+      let dateRange = GraphService.allDatesInRange(min, max, 'month'); //array of dates in milliseconds since epoch
 
-      dateRange = GraphService.allDatesInRange(min, max); //array of ms dates
       let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object, insert type here
-      let data  = GraphService.configureValues(groupedData)
+      let data  = GraphService.configureValues(groupedData, 'month')
       // ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
 
-
-      ctrl.labels = GraphService.setLabels(dateRange);
+      ctrl.labels = GraphService.setLabels(dateRange, 'month');
       ctrl.series = GraphService.setSeries(data);
       ctrl.data = GraphService.setData(dateRange, data);
     }
