@@ -5,6 +5,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
 
   ctrl.loadGraph = () => {
     if (ctrl.values.claims !== null) {
+      ctrl.filterType = ctrl.filterType || "Airline Name"
 
       let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date', ctrl.rangeType));
       dates.sort((a, b) => {
@@ -18,16 +19,14 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let max = jStat.max(dates)
       let dateRange = GraphService.allDatesInRange(min, max, ctrl.rangeType); //array of dates in milliseconds since epoch
 
+      let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.filterType );  //returns grouped object
+      let configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
 
-      let configuredData  = []
       if (ctrl.type === 'line') {
-        let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object
-        configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
+
         ctrl.labels = GraphService.setLabels(dateRange, ctrl.rangeType);
         ctrl.data = GraphService.setTotalValues(dateRange, configuredData);
       } else if (ctrl.type === 'bar') {
-        let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airport Code' );  //returns grouped object
-        configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
         ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         ctrl.data = GraphService.setCountAverages(ctrl.labels, configuredData)[0];
       }
@@ -38,7 +37,10 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   }
 
   ctrl.$onInit = () => {
+    ctrl.values = ClaimsDataService.getData();
     ctrl.ranges = ["month", "year"]
+    ctrl.filterOptions = Object.keys(ctrl.values.claims[0])
+
     ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
     ctrl.options = {
       scales: {
@@ -52,7 +54,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
         ]
       }
     }
-    ctrl.values = ClaimsDataService.getData();
     ctrl.loadGraph();
     ctrl.refreshGraph = () => {
       ctrl.loadGraph();
