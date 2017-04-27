@@ -9,18 +9,19 @@ function GraphService() {
     return series;
   }
 
-  const setData = (labels, data) => {
+  const setData = (dateRange, data) => {
     let extractedData = [];
-    data.forEach((dataset) => {
+    data.forEach((series) => {
       let results = []
-      for (let key in dataset) {  //key is airline, airport, etc.
-        for (let date in dataset[key]) {
-          if (!!dataset[key][date]){ //see if that airline has a value for that month
-            results.push(jStat.sum(dataset[key][date]).toFixed(2));
+      for (let key in series) {  //key is airline, airport, etc.
+        dateRange.forEach((date) => {
+          if (!!series[key][date]){ //see if that airline has a value for that month
+            results.push(jStat.sum(series[key][date]).toFixed(2));
           } else {
             results.push(0) //otherwise, send 0
           }
-        }
+          let d = new Date(parseInt(date)).getMonth() + ", " + new Date(parseInt(date)).getFullYear()
+        })
       }
       extractedData.push(results) //build nested array
     });
@@ -28,7 +29,7 @@ function GraphService() {
   }
 
   const setLabels = (labels) => {
-    labels.map((label) => {
+    labels = labels.map((label) => {
       let d = new Date(label)
       return (d.getMonth() + 1) + ", " + d.getFullYear();
     });
@@ -40,11 +41,11 @@ function GraphService() {
     let stop = new Date(parseInt(max));
     let current = new Date(parseInt(min));
     while (current <= stop) {
-      dates.push(current);
+      dates.push(current.valueOf());
       current = new Date(current);
       current = current.setMonth(current.getMonth() + 1);
     }
-    return dates
+    return dates;
   }
 
   return {

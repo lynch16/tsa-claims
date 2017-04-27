@@ -19,7 +19,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let max = jStat.max(dates)
 
       dateRange = GraphService.allDatesInRange(min, max); //array of ms dates
-      console.log(dateRange);
       // ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
       let data = [];
       for (let groupKey in groupedData) {
@@ -33,14 +32,16 @@ function GraphController($filter, ClaimsDataService, GraphService) {
               return val;
             });
           });
+          if (groupKey === '-') {
+            groupKey = 'Unknown';
+          }
           data.push({ [groupKey]: orderedGroup }); //need one more filter here for just values of desired field
         }
       }
 
       ctrl.labels = GraphService.setLabels(dateRange);
-      console.log(data);
       ctrl.series = GraphService.setSeries(data);
-      ctrl.data = GraphService.setData(ctrl.labels, data);
+      ctrl.data = GraphService.setData(dateRange, data);
     }
   }
 

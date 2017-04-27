@@ -3,7 +3,7 @@
 <div ng-switch on="tab.content" ng-if="ctrl.data.length > 0">
   <div ng-switch-when="line">
     <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"
-      chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" ng-cloak>
+      chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick" ng-cloak>
     </canvas>
   </div>
 
