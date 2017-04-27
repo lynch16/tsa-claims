@@ -1,4 +1,4 @@
-function GraphService() {
+function GraphService($filter) {
   const setSeries = (data) => {
     let series = []
     data.forEach((entry) => {
@@ -48,11 +48,34 @@ function GraphService() {
     return dates;
   }
 
+  const configureValues = (groupedData) => {
+    let data = [];
+    for (let groupKey in groupedData) {
+      let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date');  //order data by date for chart
+      if (!!orderedGroup) {
+        dateRange.forEach((d) => {
+          if (!orderedGroup[d]) return;
+          orderedGroup[d] = orderedGroup[d].map((claim) => {
+            let val = parseFloat( claim['Close Amount'].replace('$', "").trim() );
+            if (isNaN(val)) return 0;
+            return val;
+          });
+        });
+        if (groupKey === '-') {
+          groupKey = 'Unknown';
+        }
+        data.push({ [groupKey]: orderedGroup }); //need one more filter here for just values of desired field
+      }
+    }
+    return data;
+  }
+
   return {
     setSeries: setSeries,
     setData: setData,
     setLabels: setLabels,
-    allDatesInRange: allDatesInRange
+    allDatesInRange: allDatesInRange,
+    configureValues: configureValues
   }
 }
 

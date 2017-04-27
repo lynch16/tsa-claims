@@ -5,7 +5,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
 
   ctrl.loadGraph = () => {
     if (ctrl.values.claims !== null) {
-      let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object, insert type here
 
       let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'));
       dates.sort((a, b) => {
@@ -19,25 +18,10 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let max = jStat.max(dates)
 
       dateRange = GraphService.allDatesInRange(min, max); //array of ms dates
+      let groupedData = $filter('groupBy')(ctrl.values.claims, 'Airline Name' );  //returns grouped object, insert type here
+      let data  = GraphService.configureValues(groupedData)
       // ctrl.selectedYear = ctrl.selectedYear || ctrl.years[0]
-      let data = [];
-      for (let groupKey in groupedData) {
-        let orderedGroup = $filter('groupBy')(groupedData[groupKey], 'Incident Date');  //order data by date for chart
-        if (!!orderedGroup) {
-          dateRange.forEach((d) => {
-            if (!orderedGroup[d]) return;
-            orderedGroup[d] = orderedGroup[d].map((claim) => {
-              let val = parseFloat( claim['Close Amount'].replace('$', "").trim() );
-              if (isNaN(val)) return 0;
-              return val;
-            });
-          });
-          if (groupKey === '-') {
-            groupKey = 'Unknown';
-          }
-          data.push({ [groupKey]: orderedGroup }); //need one more filter here for just values of desired field
-        }
-      }
+
 
       ctrl.labels = GraphService.setLabels(dateRange);
       ctrl.series = GraphService.setSeries(data);
