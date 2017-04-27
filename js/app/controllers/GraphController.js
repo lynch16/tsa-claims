@@ -1,29 +1,18 @@
 function GraphController($filter, ClaimsDataService, GraphService) {
   let ctrl = this;
 
-  //ctrl.type
-
   ctrl.loadGraph = () => {
     if (ctrl.values.claims !== null) {
-      ctrl.filterType = ctrl.filterType || "Airline Name"
-
-      let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date', ctrl.rangeType));
-      dates.sort((a, b) => {
-        date1 = new Date(parseInt(a));
-        date2 = new Date(parseInt(b));
-        if (date1 > date2) return 1;
-        if (date2 > date1) return -1;
-        return 0
-      });
-      let min = jStat.min(dates)
-      let max = jStat.max(dates)
-      let dateRange = GraphService.allDatesInRange(min, max, ctrl.rangeType); //array of dates in milliseconds since epoch
-
-      let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.filterType );  //returns grouped object
+      if (ctrl.type === 'line'){
+        ctrl.filterType = ctrl.filterType || "Airline Name"
+      } else {
+        ctrl.filterType = ctrl.filterType || "Airport Code"
+      }
+      let dateRange = loadDateRange(); //gather date range for all dates within dataset
+      let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.filterType );  //returns object containing claims grouped by 2nd param
       let configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
 
       if (ctrl.type === 'line') {
-
         ctrl.labels = GraphService.setLabels(dateRange, ctrl.rangeType);
         ctrl.data = GraphService.setTotalValues(dateRange, configuredData);
       } else if (ctrl.type === 'bar') {
@@ -34,6 +23,21 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let series = GraphService.setSeries(configuredData);
       ctrl.series = series
     }
+  }
+
+  const loadDateRange = () => {
+    let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date', ctrl.rangeType));
+    dates.sort((a, b) => {
+      date1 = new Date(parseInt(a));
+      date2 = new Date(parseInt(b));
+      if (date1 > date2) return 1;
+      if (date2 > date1) return -1;
+      return 0
+    });
+    let min = jStat.min(dates); //min of date range of claims
+    let max = jStat.max(dates);
+    let range = GraphService.allDatesInRange(min, max, ctrl.rangeType); //array of dates in milliseconds since epoch
+    return range;
   }
 
   ctrl.$onInit = () => {

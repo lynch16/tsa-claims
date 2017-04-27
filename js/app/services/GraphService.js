@@ -36,16 +36,16 @@ function GraphService($filter) {
           for (let i = 0; i < labels.length; i++) { //for each month in labels
             let monthlyCounts = [];
             for (let date in series[key]) {         //check all claims
-              let month = new Date(parseInt(date)).getMonth();
-              if (month === i){ //see if that airline has any claims for that month
+              let month = new Date(parseInt(date)).getMonth();  //parse ms and store month
+              if (month === i){                                //if claim month and current label are equal
                 monthlyCounts.push(series[key][date].length); //add the number of claims
-              } 
+              }
             }
             let avg, stdev;
             if (monthlyCounts.length > 0) {
               avg = jStat.mean(monthlyCounts).toFixed(2)
               stdev = jStat.stdev(monthlyCounts).toFixed(2)
-            } else {
+            } else {                                          //keep zeros for months with no claims
               avg = 0;
               stdev = 0;
             }
@@ -53,10 +53,10 @@ function GraphService($filter) {
             results[1].push(stdev)
           } //end labels loop
         }
-        avgCounts.push(results[0]) //build nested array
-        stdDevs.push(results[1])
+        avgCounts.push(results[0]) //array of averages
+        stdDevs.push(results[1]) //array of stdevs
       });
-      return [avgCounts, stdDevs]
+      return [avgCounts, stdDevs] //return as nested array per ChartJS
     }
 
 
@@ -108,7 +108,7 @@ function GraphService($filter) {
         if (groupKey === '-') {
           groupKey = 'Unknown';
         }
-        data.push({ [groupKey]: orderedGroup }); 
+        data.push({ [groupKey]: orderedGroup });
       }
     }
     return data;
