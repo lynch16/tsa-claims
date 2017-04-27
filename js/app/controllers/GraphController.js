@@ -10,10 +10,10 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       }
       let dateRange = loadDateRange(); //gather date range for all dates within dataset
       let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.filterType );  //returns object containing claims grouped by 2nd param
-      let configuredData  = GraphService.configureValues(groupedData, ctrl.rangeType) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
+      let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
 
       if (ctrl.type === 'line') {
-        ctrl.labels = GraphService.setLabels(dateRange, ctrl.rangeType);
+        ctrl.labels = GraphService.setLabels(dateRange);
         ctrl.data = GraphService.setTotalValues(dateRange, configuredData);
       } else if (ctrl.type === 'bar') {
         ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -26,7 +26,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   }
 
   const loadDateRange = () => {
-    let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date', ctrl.rangeType));
+    let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'));
     dates.sort((a, b) => {
       date1 = new Date(parseInt(a));
       date2 = new Date(parseInt(b));
@@ -36,7 +36,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
     });
     let min = jStat.min(dates); //min of date range of claims
     let max = jStat.max(dates);
-    let range = GraphService.allDatesInRange(min, max, ctrl.rangeType); //array of dates in milliseconds since epoch
+    let range = GraphService.allDatesInRange(min, max); //array of dates in milliseconds since epoch
     return range;
   }
 

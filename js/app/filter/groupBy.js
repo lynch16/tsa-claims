@@ -1,17 +1,12 @@
 function groupBy() {
-  return (claims, param, type = 'month') => {
+  return (claims, param) => {
     if (!(claims && param)) return;
     let result = {};
     if (param === 'Incident Date') {
       for (let i = 0; i < claims.length; i++) {
         let date = Date.parse( claims[i]['Incident Date'].split(" ")[0] ); //if date and time, use date
         let chartDate = new Date(date);
-        if (type === 'month') {
-          chartDate.setDate(1);
-        } else if (type === 'year') {
-          chartDate.setDate(1);
-          chartDate.setMonth(1);
-        }
+        chartDate.setDate(1);
         chartDate = chartDate.valueOf();
         if (!result[chartDate]) {                            //if year hasn't been set yet
           result[chartDate] = [ claims[i] ];                 //assign claim array
