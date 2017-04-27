@@ -27,9 +27,31 @@ function GraphService() {
     return extractedData
   }
 
+  const setLabels = (labels) => {
+    labels.map((label) => {
+      let d = new Date(label)
+      return (d.getMonth() + 1) + ", " + d.getFullYear();
+    });
+    return labels
+  }
+
+  const allDatesInRange = (min, max) => {
+    let dates = [];
+    let stop = new Date(parseInt(max));
+    let current = new Date(parseInt(min));
+    while (current <= stop) {
+      dates.push(current);
+      current = new Date(current);
+      current = current.setMonth(current.getMonth() + 1);
+    }
+    return dates
+  }
+
   return {
     setSeries: setSeries,
-    setData: setData
+    setData: setData,
+    setLabels: setLabels,
+    allDatesInRange: allDatesInRange
   }
 }
 
