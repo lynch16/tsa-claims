@@ -6,8 +6,7 @@ function groupBy() {
       for (let i = 0; i < claims.length; i++) {
         let date = Date.parse( claims[i]['Incident Date'].split(" ")[0] ); //if date and time, use date
         let chartDate = new Date(date);
-        chartDate.setDate(1);
-        chartDate = chartDate.valueOf();
+        chartDate = chartDate.setDate(1).valueOf();
         if (!result[chartDate]) {                            //if year hasn't been set yet
           result[chartDate] = [ claims[i] ];                 //assign claim array
         } else {

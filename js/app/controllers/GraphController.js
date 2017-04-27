@@ -42,7 +42,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
 
   ctrl.$onInit = () => {
     ctrl.values = ClaimsDataService.getData();
-    ctrl.ranges = ["month", "year"]
     ctrl.filterOptions = Object.keys(ctrl.values.claims[0])
 
     ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
@@ -63,13 +62,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       ctrl.loadGraph();
     }
   }
-
-  //
-  // ctrl.$onChanges = () => {
-  //   console.log('change');
-  //   ctrl.values = ClaimsDataService.getData();
-  //   ctrl.loadGraph();
-  // }
 }
 
 angular
