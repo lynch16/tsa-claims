@@ -30,6 +30,11 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   }
 
   ctrl.addData = () => {
+    for (let option in ctrl.newClaim) {
+      if (option === "") {
+        ctrl.newClaim[option] = "Unknown"
+      }
+    }
     ctrl.values.claims.push(ctrl.newClaim);
     ctrl.refreshGraph();
     console.log('New Claim Saved!');
@@ -112,6 +117,22 @@ function GraphController($filter, ClaimsDataService, GraphService) {
                 labelString: 'Month'
               }
             }]
+          },
+          tooltips: {
+            position: 'nearest',
+            filter: (tooltipItem) => {
+              if (tooltipItem.yLabel > 0) return tooltipItem
+              return
+            },
+            callbacks: {
+              title: (tooltipItems) => {
+                let month = tooltipItems[0].xLabel.split(", ")
+                return months[month[0]-1] + ", " + month[1]
+              },
+              label: (tooltipItem) => {
+                return ctrl.series[tooltipItem.datasetIndex] + ": $" + tooltipItem.yLabel;
+              }
+            }
           }
         }
       }

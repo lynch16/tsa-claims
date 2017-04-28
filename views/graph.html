@@ -15,10 +15,10 @@
   </div>
 
   <div class="col-sm-3 pull-left legend">
-    <h3>Series:</h3>
+    <h3>{{ctrl.groupType}}:</h3>
     <input type="checkbox" name="toggleAll" ng-checked="ctrl.keys.length" ng-click="ctrl.toggleAllKeys()">
     <label>All</label> <br>
-    <input type="text" ng-model="ctrl.selectSeries" placeholder="Search Series" name="selectSeries"/>
+    <input type="text" ng-model="ctrl.selectSeries" placeholder="Search {{ctrl.groupType}}s" name="selectSeries"/>
     <ul ng-repeat="seriesName in ctrl.allSeries | filter: ctrl.selectSeries">
       <input type="checkbox"
              value="{{seriesName}}"
@@ -28,10 +28,11 @@
     </ul>
   </div>
 </div>
-<form class="clearfix" ng-submit="ctrl.addData()">
+<form class="col-sm-12" ng-submit="ctrl.addData()">
   Report a Claim <br>
   <input type="text" ng-model="ctrl.newClaim['Incident Date']" placeholder="Incident Date" name="date"/>
   <input type="text" ng-model="ctrl.newClaim['Airport Code']" placeholder="Airport Code" name="airportCode"/>
+  <input type="text" ng-model="ctrl.newClaim['Airline Name']" placeholder="Airline Name" name="airlineName"/>
   <input type="text" ng-model="ctrl.newClaim['Close Amount']" placeholder="Value" name="value"/>
   <input type="submit" id="submit" value="Submit" />
 </form>
