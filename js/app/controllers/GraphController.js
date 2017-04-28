@@ -60,30 +60,32 @@ function GraphController($filter, ClaimsDataService, GraphService) {
     ctrl.refreshGraph();
   }
 
+  ctrl.addAverages = (configuredData) => {
+    let filteredData = $filter('selectKeys')(configuredData, ctrl.allSeries);
+    let data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+    let  averages = []  //calculate averages across all keys
+    for (let i = 0; i < ctrl.labels.length; i++) {
+      let vals = []
+      data.forEach((dataset) => {
+        vals.push(parseFloat(dataset[i]));
+      });
+      averages.push(jStat.mean(vals).toFixed(2))
+    }
+    ctrl.data.push(averages);
+    ctrl.series.push("Global Average");
+  }
+
   ctrl.loadGraph = (groupedData) => {
     if (ctrl.values.claims !== null) {
-      let dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
+      ctrl.dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
       let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
-      let filteredData = $filter('selectKeys')(configuredData, ctrl.keys);
+      let filteredData = $filter('selectKeys')(configuredData, ctrl.keys); //only display desired keys
 
       if (ctrl.type === 'line') {
-        ctrl.labels = GraphService.setLabels(dateRange);
-        data = GraphService.setTotalValues(dateRange, filteredData);
-        series = GraphService.setSeries(filteredData);
-
-        let  averages = []  //calculate averages across all keys
-        for (let i = 0; i < ctrl.labels.length; i++) {
-          let vals = []
-          data.forEach((dataset) => {
-            vals.push(parseFloat(dataset[i]));
-          });
-          averages.push(jStat.mean(vals).toFixed(2))
-        }
-        data.push(averages);
-        series.push("Global Average");
-        ctrl.data = data;
-        ctrl.series = series;
-
+        ctrl.labels = GraphService.setLabels(ctrl.dateRange);
+        ctrl.data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+        ctrl.series = GraphService.setSeries(filteredData);
+        ctrl.addAverages(configuredData);
         ctrl.options = {
           title: {
             display: true,
@@ -95,8 +97,12 @@ function GraphController($filter, ClaimsDataService, GraphService) {
         ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         ctrl.series = GraphService.setSeries(filteredData);
 
-        let data = GraphService.setCountAverages(ctrl.labels, filteredData);
-        ctrl.data = data[0]
+        let data = GraphService.setCountAverages(ctrl.labels, filteredData)
+        if (data[0].length > 0) {
+          ctrl.data = data[0]
+        } else {
+          ctrl.data = [[0]]
+        }
         ctrl.options = {
           title: {
             display: true,
