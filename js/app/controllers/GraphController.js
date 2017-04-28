@@ -191,10 +191,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       }
     }
   }
-
-  ctrl.$onChange = (changes) => {
-    console.log("changes");
-  }
 }
 
 angular
