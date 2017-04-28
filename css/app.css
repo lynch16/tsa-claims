@@ -1,3 +1,11 @@
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
+.graph {
+  max-height: 400px;
+  height: 400px;
+}
+.legend {
+  height: inherit;
+  overflow: scroll;
+}

@@ -1,31 +1,32 @@
-<div ng-switch on="tab.content" ng-if="ctrl.values.claims.length > 0">
-  <div ng-switch-when="line">
-  	<select ng-init="ctrl.groupType = 'Airline Name'" ng-model="ctrl.groupType" ng-options="f for f in ctrl.groupOptions" ng-change="ctrl.refreshGraph()"></select>
-    <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"
-      chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick" ng-cloak>
-    </canvas>
+<div class="graph">
+  <div class= "col-sm-9 pull-right" ng-switch on="tab.content" ng-if="ctrl.values.claims.length > 0">
+    <div ng-switch-when="line">
+      <select ng-init="ctrl.groupType = 'Airline Name'" ng-model="ctrl.groupType" ng-options="f for f in ctrl.groupOptions" ng-change="ctrl.refreshGraph()"></select>
+      <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"
+        chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick" ng-cloak>
+      </canvas>
+    </div>
+
+    <div ng-switch-when="bar">
+      <select ng-init="ctrl.groupType = 'Airport Code'" ng-model="ctrl.groupType" ng-options="f for f in ctrl.groupOptions" ng-change="ctrl.refreshGraph()"></select>
+      <canvas id="bar" class="chart chart-bar" chart-data="ctrl.data" chart-labels="ctrl.labels" chart-series="ctrl.series"  chart-options="ctrl.options" ng-cloak>
+      </canvas>
+    </div>
   </div>
 
-  <div ng-switch-when="bar">
-  	<select ng-init="ctrl.groupType = 'Airport Code'" ng-model="ctrl.groupType" ng-options="f for f in ctrl.groupOptions" ng-change="ctrl.refreshGraph()"></select>
-    <canvas id="bar" class="chart chart-bar" chart-data="ctrl.data" chart-labels="ctrl.labels" chart-series="ctrl.series"  chart-options="ctrl.options" ng-cloak>
-    </canvas>
+  <div class="col-sm-3 pull-left legend">
+    <input type="checkbox" name="toggleAll" ng-checked="ctrl.keys.length" ng-click="ctrl.toggleAllKeys()">
+    <label>All</label>
+    <ul ng-repeat="seriesName in ctrl.allSeries">
+      <input type="checkbox"
+             value="{{seriesName}}"
+             ng-checked="ctrl.keys.indexOf(seriesName) + 1"
+             ng-click="ctrl.toggleKeys(seriesName)" />
+             {{seriesName}}
+    </ul>
   </div>
 </div>
-
-<div class="legend">
-  <input type="checkbox" name="toggleAll" ng-checked="ctrl.keys.length" ng-click="ctrl.toggleAllKeys()">
-  <label>All</label>
-  <label ng-repeat="seriesName in ctrl.allSeries">
-    <input type="checkbox"
-           value="{{seriesName}}"
-           ng-checked="ctrl.keys.indexOf(seriesName) + 1"
-           ng-click="ctrl.toggleKeys(seriesName)" />
-           {{seriesName}}
-  </label>
-</div>
-
-<form ng-submit="ctrl.addData()">
+<form class="clearfix" ng-submit="ctrl.addData()">
   Report a Claim <br>
   <input type="text" ng-model="ctrl.newClaim['Incident Date']" placeholder="Incident Date" name="date"/>
   <input type="text" ng-model="ctrl.newClaim['Airport Code']" placeholder="Airport Code" name="airportCode"/>
