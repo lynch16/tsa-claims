@@ -29,6 +29,13 @@ function GraphController($filter, ClaimsDataService, GraphService) {
     ctrl.loadGraph(groupedData);
   }
 
+  ctrl.regroup = () => {
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    ctrl.allSeries = Object.keys(groupedData);
+    ctrl.checkAll();
+    ctrl.loadGraph(groupedData);
+  }
+
   ctrl.addData = () => {
     for (let option in ctrl.newClaim) {
       if (option === "") {

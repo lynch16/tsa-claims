@@ -42,6 +42,7 @@ function GraphService($filter) {
             }
           }
           let avg, stdev;
+          console.log(monthlyCounts.length);
           if (monthlyCounts.length > 0) {
             avg = jStat.mean(monthlyCounts).toFixed(2)
             stdev = jStat.stdev(monthlyCounts).toFixed(2)
