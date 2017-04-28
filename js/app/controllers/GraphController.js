@@ -15,9 +15,25 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       if (ctrl.type === 'line') {
         ctrl.labels = GraphService.setLabels(dateRange);
         ctrl.data = GraphService.setTotalValues(dateRange, configuredData);
+
+        ctrl.options = {
+          title: {
+            display: true,
+            text: 'Total Values Per Month',
+            fontSize: 16
+          }
+        }
       } else if (ctrl.type === 'bar') {
         ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        ctrl.data = GraphService.setCountAverages(ctrl.labels, configuredData)[0];
+        let data = GraphService.setCountAverages(ctrl.labels, configuredData);
+        ctrl.data = data[0]
+        ctrl.options = {
+          title: {
+            display: true,
+            text: 'Average Claims Per Month',
+            fontSize: 16
+          }
+        }
       }
 
       let series = GraphService.setSeries(configuredData);
@@ -48,19 +64,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       ctrl.newClaim[option] = "";
     });
 
-    ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
-    ctrl.options = {
-      scales: {
-        yAxes: [
-          {
-            id: 'y-axis-1',
-            type: 'linear',
-            display: true,
-            position: 'left'
-          }
-        ]
-      }
-    }
     ctrl.loadGraph();
     ctrl.refreshGraph = () => {     //needed in order to call from view
       ctrl.loadGraph();
