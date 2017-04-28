@@ -1,25 +1,61 @@
 function GraphController($filter, ClaimsDataService, GraphService) {
   let ctrl = this;
 
-  ctrl.loadGraph = () => {
-    if (ctrl.values.claims !== null) {
-      if (ctrl.type === 'line'){
-        ctrl.groupType = ctrl.groupType || "Airline Name" //default grouping for each graph
-      } else {
-        ctrl.groupType = ctrl.groupType || "Airport Code"
-      }
-      let dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
-      let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
-      let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
-      ctrl.allSeries = GraphService.setSeries(configuredData);
-      ctrl.keys = [];
-      ctrl.checkAll = () => {
-        ctrl.keys = angular.copy(ctrl.allSeries);
-      }
-      ctrl.uncheckAll = () => {
-        ctrl.keys = [];
-      }
+  ctrl.$onInit = () => {
+    ctrl.values = ClaimsDataService.getData();
+    if (ctrl.type === 'line'){
+      ctrl.groupType = ctrl.groupType || "Airline Name" //default grouping for each graph
+    } else {
+      ctrl.groupType = ctrl.groupType || "Airport Code"
+    }
+    ctrl.groupOptions = Object.keys(ctrl.values.claims[0])
 
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    ctrl.allSeries = Object.keys(groupedData);
+    ctrl.keys = [];
+
+    ctrl.newClaim = {}
+    ctrl.groupOptions.forEach((option) => {
+      ctrl.newClaim[option] = "";
+    });
+    ctrl.checkAll();
+    ctrl.loadGraph(groupedData);
+  }
+
+  ctrl.refreshGraph = () => {
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    ctrl.loadGraph(groupedData);
+  }
+
+  ctrl.addData = () => {
+    ctrl.values.claims.push(ctrl.newClaim);
+    ctrl.refreshGraph();
+    console.log('New Claim Saved!');
+  }
+
+  ctrl.checkAll = () => {
+    ctrl.keys = angular.copy(ctrl.allSeries);
+  }
+  ctrl.uncheckAll = () => {
+    ctrl.keys = [];
+  }
+  ctrl.toggleKeys = (key) => {
+    let indx = ctrl.keys.indexOf(key);
+    console.log(key);
+    console.log(indx);
+    if (indx > -1) {
+      ctrl.keys.splice(indx, 1);
+    } else {
+      ctrl.keys.push(key);
+    }
+    ctrl.refreshGraph();
+    console.log(ctrl.keys);
+  }
+
+  ctrl.loadGraph = (groupedData) => {
+    if (ctrl.values.claims !== null) {
+      let dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
+      let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
       let filteredData = $filter('selectKeys')(configuredData, ctrl.keys);
 
       if (ctrl.type === 'line') {
@@ -64,37 +100,8 @@ function GraphController($filter, ClaimsDataService, GraphService) {
     }
   }
 
-  ctrl.$onInit = () => {
-    ctrl.values = ClaimsDataService.getData();
-    ctrl.groupOptions = Object.keys(ctrl.values.claims[0])
-    ctrl.newClaim = {}
-    ctrl.groupOptions.forEach((option) => {
-      ctrl.newClaim[option] = "";
-    });
-    ctrl.loadGraph();
-    ctrl.refreshGraph = () => {     //needed in order to call from view
-      ctrl.loadGraph();
-    }
-    ctrl.addData = () => {
-      ctrl.values.claims.push(ctrl.newClaim);
-      ctrl.refreshGraph();
-      console.log('New Claim Saved!');
-    }
-  }
-
   ctrl.$onChange = (changes) => {
     console.log("changes");
-  }
-
-  ctrl.toggleKeys = (key) => {
-    console.log(key);
-    let indx = ctrl.keys.indexOf(key);
-    if (indx > -1) {
-      ctrl.keys.splice(indx, 1);
-    } else {
-      ctrl.keys.push(key);
-    }
-    console.log(ctrl.allSeries);
   }
 }
 

@@ -17,7 +17,6 @@
   <label ng-repeat="seriesName in ctrl.allSeries">
     <input type="checkbox"
            value="{{seriesName}}"
-           ng-checked="ctrl.keys.indexOf(seriesName)"
            ng-click="ctrl.toggleKeys(seriesName)" />
            {{seriesName}}
   </label>
