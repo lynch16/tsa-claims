@@ -4,12 +4,12 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   ctrl.loadGraph = () => {
     if (ctrl.values.claims !== null) {
       if (ctrl.type === 'line'){
-        ctrl.filterType = ctrl.filterType || "Airline Name"
+        ctrl.groupType = ctrl.groupType || "Airline Name"
       } else {
-        ctrl.filterType = ctrl.filterType || "Airport Code"
+        ctrl.groupType = ctrl.groupType || "Airport Code"
       }
       let dateRange = loadDateRange(); //gather date range for all dates within dataset
-      let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.filterType );  //returns object containing claims grouped by 2nd param
+      let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
       let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
 
       if (ctrl.type === 'line') {
@@ -58,9 +58,9 @@ function GraphController($filter, ClaimsDataService, GraphService) {
 
   ctrl.$onInit = () => {
     ctrl.values = ClaimsDataService.getData();
-    ctrl.filterOptions = Object.keys(ctrl.values.claims[0])
+    ctrl.groupOptions = Object.keys(ctrl.values.claims[0])
     ctrl.newClaim = {}
-    ctrl.filterOptions.forEach((option) => {
+    ctrl.groupOptions.forEach((option) => {
       ctrl.newClaim[option] = "";
     });
 
