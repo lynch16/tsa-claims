@@ -1,4 +1,4 @@
-function WorkbookService($q, ClaimsDataService) {
+function WorkbookService(ClaimsDataService) {
 
   const loadLocalData = (fileLocation) => { //load XLS data from local file for when app starts
     /* set up XMLHttpRequest */
