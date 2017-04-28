@@ -36,20 +36,28 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   ctrl.checkAll = () => {
     ctrl.keys = angular.copy(ctrl.allSeries);
   }
+
   ctrl.uncheckAll = () => {
     ctrl.keys = [];
   }
+
+  ctrl.toggleAllKeys = () => {
+    if (ctrl.keys.length > 0){
+      ctrl.uncheckAll();
+    } else {
+      ctrl.checkAll();
+    }
+    ctrl.refreshGraph();
+  }
+
   ctrl.toggleKeys = (key) => {
     let indx = ctrl.keys.indexOf(key);
-    console.log(key);
-    console.log(indx);
     if (indx > -1) {
       ctrl.keys.splice(indx, 1);
     } else {
       ctrl.keys.push(key);
     }
     ctrl.refreshGraph();
-    console.log(ctrl.keys);
   }
 
   ctrl.loadGraph = (groupedData) => {

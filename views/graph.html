@@ -14,9 +14,12 @@
 </div>
 
 <div class="legend">
+  <input type="checkbox" name="toggleAll" ng-checked="ctrl.keys.length" ng-click="ctrl.toggleAll()">
+  <label>All</label>
   <label ng-repeat="seriesName in ctrl.allSeries">
     <input type="checkbox"
            value="{{seriesName}}"
+           ng-checked="ctrl.keys.indexOf(seriesName) + 1"
            ng-click="ctrl.toggleKeys(seriesName)" />
            {{seriesName}}
   </label>
