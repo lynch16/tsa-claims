@@ -38,12 +38,13 @@ function GraphController($filter, ClaimsDataService, GraphService) {
 
   ctrl.addData = () => {
     for (let option in ctrl.newClaim) {
-      if (option === "") {
+      ctrl.newClaim['Claim Number'] = Math.random().toString().slice(2,15)
+      if (ctrl.newClaim[option] === "") {
         ctrl.newClaim[option] = "Unknown"
       }
     }
     ctrl.values.claims.push(ctrl.newClaim);
-    ctrl.refreshGraph();
+    ctrl.regroup();
     console.log('New Claim Saved!');
   }
 
