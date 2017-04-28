@@ -1,5 +1,6 @@
 function GraphController($filter, ClaimsDataService, GraphService) {
   let ctrl = this;
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   ctrl.$onInit = () => {
     ctrl.values = ClaimsDataService.getData();
@@ -91,10 +92,29 @@ function GraphController($filter, ClaimsDataService, GraphService) {
             display: true,
             text: 'Total Values Per Month',
             fontSize: 16
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                callback: (value) => {
+                  return '$' + value;
+                }
+              },
+              scaleLabel: {
+                display: true,
+                labelString: 'Total Claim Values'
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Month'
+              }
+            }]
           }
         }
       } else if (ctrl.type === 'bar') {
-        ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        ctrl.labels = months;
         ctrl.series = GraphService.setSeries(filteredData);
 
         let data = GraphService.setCountAverages(ctrl.labels, filteredData)
@@ -108,6 +128,20 @@ function GraphController($filter, ClaimsDataService, GraphService) {
             display: true,
             text: 'Average Claims Per Month',
             fontSize: 16
+          },
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Average Number of Claims'
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Month'
+              }
+            }]
           }
         }
       }
