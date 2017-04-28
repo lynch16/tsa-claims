@@ -68,8 +68,8 @@ function GraphService($filter) {
     return labels;
   }
 
-  const loadDateRange = () => {
-    let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'));
+  const loadDateRange = (data) => {
+    let dates = Object.keys($filter('groupBy')(data, 'Incident Date'));
     dates.sort((a, b) => {
       date1 = new Date(parseInt(a));
       date2 = new Date(parseInt(b));
@@ -121,6 +121,7 @@ function GraphService($filter) {
     setTotalValues: setTotalValues,
     setCountAverages: setCountAverages,
     setLabels: setLabels,
+    loadDateRange: loadDateRange,
     allDatesInRange: allDatesInRange,
     configureValues: configureValues
   }

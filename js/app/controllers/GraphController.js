@@ -8,7 +8,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       } else {
         ctrl.groupType = ctrl.groupType || "Airport Code"
       }
-      let dateRange = GraphService.loadDateRange(); //gather date range for all dates within dataset
+      let dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
       let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
       let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
 
