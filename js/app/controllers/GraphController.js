@@ -77,7 +77,12 @@ function GraphController($filter, ClaimsDataService, GraphService) {
 
   ctrl.addAverages = (configuredData) => {
     let filteredData = $filter('selectKeys')(configuredData, ctrl.allSeries);
-    let data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+    let data;
+    if (ctrl.type === 'line-average') {
+      data = GraphService.setValueAverages(months, filteredData)
+    } else {
+      data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+    }
     let  averages = []  //calculate averages across all keys
     for (let i = 0; i < ctrl.labels.length; i++) {
       let vals = []
@@ -96,11 +101,18 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
       let filteredData = $filter('selectKeys')(configuredData, ctrl.keys); //only display desired keys
 
+      let data;
       if (ctrl.type === 'line' || ctrl.type === 'line-average') {
-        ctrl.labels = GraphService.setLabels(ctrl.dateRange);
         if (ctrl.type === 'line-average') {
-          ctrl.data = GraphService.setAverageValues(ctrl.dateRange, filteredData);
+          ctrl.labels = months;
+          data = GraphService.setValueAverages(ctrl.labels, filteredData);
+          if (data.length > 0) {
+            ctrl.data = data[0];
+          } else {
+            ctrl.data = [[0]]
+          }
         } else {
+          ctrl.labels = GraphService.setLabels(ctrl.dateRange);
           ctrl.data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
         }
         ctrl.series = GraphService.setSeries(filteredData);
@@ -138,10 +150,12 @@ function GraphController($filter, ClaimsDataService, GraphService) {
             },
             callbacks: {
               title: (tooltipItems) => {
-                let month = tooltipItems[0].xLabel.split(", ")
-                return months[month[0]-1] + ", " + month[1]
+                let month = tooltipItems[0].xLabel.split(", ") || tooltipItems[0].xLabel;
+                if (month.length === 1) return tooltipItems[0].xLabel;
+                return months[month[0]-1] + ", " + month[1];
               },
               label: (tooltipItem) => {
+
                 return ctrl.series[tooltipItem.datasetIndex] + ": $" + tooltipItem.yLabel;
               }
             }
@@ -152,7 +166,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
         ctrl.labels = months;
         ctrl.series = GraphService.setSeries(filteredData);
 
-        let data = GraphService.setCountAverages(ctrl.labels, filteredData)
+        data = GraphService.setCountAverages(ctrl.labels, filteredData)
         if (data[0].length > 0) {
           ctrl.data = data[0]
         } else {

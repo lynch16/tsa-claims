@@ -27,22 +27,36 @@ function GraphService($filter) {
     return extractedData
   }
 
-  const setAverageValues = (dateRange, data) => {
-    let extractedData = [];
+  const setValueAverages = (labels, data) => {
+    let avgCounts = [];
+    let stdDevs = [];
     data.forEach((series) => {
-      let results = []
+      let results = [ [], [] ]
       for (let key in series) {  //key is airline, airport, etc.
-        dateRange.forEach((date) => {
-          if (!!series[key][date]){ //see if that airline has a value for that month
-            results.push(jStat.mean(series[key][date]).toFixed(2));
-          } else {
-            results.push(0) //otherwise, send 0
+        for (let i = 0; i < labels.length; i++) { //for each month in labels
+          let monthlyCounts = [];
+          for (let date in series[key]) {         //check all claims
+            let month = new Date(parseInt(date)).getMonth();  //parse ms and store month
+            if (month === i){                                //if claim month and current label are equal
+              monthlyCounts.push(jStat.sum(series[key][date])); //add the number of claims
+            }
           }
-        })
+          let avg, stdev;
+          if (monthlyCounts.length > 0) {
+            avg = jStat.mean(monthlyCounts).toFixed(2)
+            stdev = jStat.stdev(monthlyCounts).toFixed(2)
+          } else {                                          //keep zeros for months with no claims
+            avg = 0;
+            stdev = 0;
+          }
+          results[0].push(avg)
+          results[1].push(stdev)
+        } //end labels loop
       }
-      extractedData.push(results) //build nested array
+      avgCounts.push(results[0]) //array of averages
+      stdDevs.push(results[1]) //array of stdevs
     });
-    return extractedData
+    return [avgCounts, stdDevs] //return as nested array per ChartJS
   }
 
   const setCountAverages = (labels, data) => {
@@ -136,7 +150,7 @@ function GraphService($filter) {
   return {
     setSeries: setSeries,
     setTotalValues: setTotalValues,
-    setAverageValues: setAverageValues,
+    setValueAverages: setValueAverages,
     setCountAverages: setCountAverages,
     setLabels: setLabels,
     loadDateRange: loadDateRange,
