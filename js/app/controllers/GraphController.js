@@ -165,6 +165,20 @@ function GraphController($filter, ClaimsDataService, GraphService) {
                 labelString: 'Month'
               }
             }]
+          },
+          tooltips: {
+            position: 'nearest',
+            filter: (tooltipItem) => {
+              if (tooltipItem.yLabel > 0) return tooltipItem
+              return
+            },
+            callbacks: {
+              label: (tooltipItem) => {
+                let avgLabel = ctrl.series[tooltipItem.datasetIndex] + ": Average " + tooltipItem.yLabel
+                let stdevLabel = "StdDev " + data[1][tooltipItem.datasetIndex][tooltipItem.index]
+                return avgLabel + " | " + stdevLabel;
+              }
+            }
           }
         }
       }
