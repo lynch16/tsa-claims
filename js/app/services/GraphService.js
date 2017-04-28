@@ -77,7 +77,6 @@ function GraphService($filter) {
     return [avgCounts, stdDevs] //return as nested array per ChartJS
   }
 
-
   const setLabels = (labels) => {
     labels = labels.map((label) => {
       let d = new Date(label)
