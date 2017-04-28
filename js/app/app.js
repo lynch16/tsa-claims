@@ -5,15 +5,15 @@ angular
     $stateProvider
       .state('root', {
         url: '/',
-        template: '<customgraph type="{{tab.content}}"></customgraph>',
+        templateUrl: 'views/tabs.html',
+        controller: 'TabsController as tabs',
         resolve: {
           values: (ClaimsDataService) => {
             return ClaimsDataService.waitData();
           }
         }
       })
-      $urlRouterProvider.otherwise('/')
-
+      $urlRouterProvider.otherwise('/');
   })
   .run(function(WorkbookService){
     WorkbookService.loadLocalData('data/claims-2014.xls');

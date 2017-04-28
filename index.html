@@ -8,19 +8,8 @@
   </head>
   <body>
     <div class="container">
-      <div class="tabs" ng-controller="TabsController as tabs">
-        <md-tabs md-selected="selectedIndex" md-dynamic-height md-border-bottom>
-          <md-tab ng-repeat="tab in tabs"
-                  ng-disabled="tab.disabled"
-                  label="{{tab.title}}">
-              <md-tab-body>
 
-                <div ui-view></div>
-
-              </md-tab-body>
-          </md-tab>
-        </md-tabs>
-      </div>
+      <div ui-view></div>
 
       <div class="workbook" ng-controller='WorkbookController'>
         <js-xls onread="read" onerror="error"></js-xls>
