@@ -12,3 +12,11 @@
     </canvas>
   </div>
 </div>
+
+<form ng-submit="ctrl.addData()">
+  Report a Claim <br>
+  <input type="text" ng-model="ctrl.newClaim['Incident Date']" placeholder="Incident Date" name="date"/>
+  <input type="text" ng-model="ctrl.newClaim['Airport Code']" placeholder="Airport Code" name="airportCode"/>
+  <input type="text" ng-model="ctrl.newClaim['Close Amount']" placeholder="Value" name="value"/>
+  <input type="submit" id="submit" value="Submit" />
+</form>

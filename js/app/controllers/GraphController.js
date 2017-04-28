@@ -43,6 +43,10 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   ctrl.$onInit = () => {
     ctrl.values = ClaimsDataService.getData();
     ctrl.filterOptions = Object.keys(ctrl.values.claims[0])
+    ctrl.newClaim = {}
+    ctrl.filterOptions.forEach((option) => {
+      ctrl.newClaim[option] = "";
+    });
 
     ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
     ctrl.options = {
@@ -58,8 +62,13 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       }
     }
     ctrl.loadGraph();
-    ctrl.refreshGraph = () => {
+    ctrl.refreshGraph = () => {     //needed in order to call from view
       ctrl.loadGraph();
+    }
+    ctrl.addData = () => {
+      ctrl.values.claims.push(ctrl.newClaim);
+      ctrl.refreshGraph();
+      console.log('New Claim Saved!');
     }
   }
 }
