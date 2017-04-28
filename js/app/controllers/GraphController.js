@@ -120,7 +120,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
         ctrl.options = {
           title: {
             display: true,
-            text: (ctrl.type === 'line') ? 'Total Values Per Month' : 'Average Values Per Month',
+            text: (ctrl.type === 'line') ? 'Total Values Per Month' : 'Average Value of All Claims Per Month',
             fontSize: 16
           },
           scales: {
@@ -132,7 +132,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
               },
               scaleLabel: {
                 display: true,
-                labelString: (ctrl.type === 'line') ? 'Total Claim Values' : 'Average Claim Values',
+                labelString: (ctrl.type === 'line') ? 'Total Claim Values' : 'Average Total Claim Values',
               }
             }],
             xAxes: [{
