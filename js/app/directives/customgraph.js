@@ -9,7 +9,7 @@ function customgraph($compile) {
       labels: "<",
       series: "<"
     },
-    templateUrl: 'graph.html'
+    templateUrl: 'views/graph.html'
   }
 }
 

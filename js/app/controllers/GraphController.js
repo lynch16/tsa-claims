@@ -1,65 +1,198 @@
 function GraphController($filter, ClaimsDataService, GraphService) {
   let ctrl = this;
-
-  ctrl.loadGraph = () => {
-    if (ctrl.values.claims !== null) {
-      if (ctrl.type === 'line'){
-        ctrl.filterType = ctrl.filterType || "Airline Name"
-      } else {
-        ctrl.filterType = ctrl.filterType || "Airport Code"
-      }
-      let dateRange = loadDateRange(); //gather date range for all dates within dataset
-      let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.filterType );  //returns object containing claims grouped by 2nd param
-      let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
-
-      if (ctrl.type === 'line') {
-        ctrl.labels = GraphService.setLabels(dateRange);
-        ctrl.data = GraphService.setTotalValues(dateRange, configuredData);
-      } else if (ctrl.type === 'bar') {
-        ctrl.labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        ctrl.data = GraphService.setCountAverages(ctrl.labels, configuredData)[0];
-      }
-
-      let series = GraphService.setSeries(configuredData);
-      ctrl.series = series
-    }
-  }
-
-  const loadDateRange = () => {
-    let dates = Object.keys($filter('groupBy')(ctrl.values.claims, 'Incident Date'));
-    dates.sort((a, b) => {
-      date1 = new Date(parseInt(a));
-      date2 = new Date(parseInt(b));
-      if (date1 > date2) return 1;
-      if (date2 > date1) return -1;
-      return 0
-    });
-    let min = jStat.min(dates); //min of date range of claims
-    let max = jStat.max(dates);
-    let range = GraphService.allDatesInRange(min, max); //array of dates in milliseconds since epoch
-    return range;
-  }
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   ctrl.$onInit = () => {
     ctrl.values = ClaimsDataService.getData();
-    ctrl.filterOptions = Object.keys(ctrl.values.claims[0])
+    if (ctrl.type === 'line'){
+      ctrl.groupType = ctrl.groupType || "Airline Name" //default grouping for each graph
+    } else {
+      ctrl.groupType = ctrl.groupType || "Airport Code"
+    }
+    ctrl.groupOptions = Object.keys(ctrl.values.claims[0])
 
-    ctrl.datasetOverride = [{ yAxisID: 'y-axis-1' }];
-    ctrl.options = {
-      scales: {
-        yAxes: [
-          {
-            id: 'y-axis-1',
-            type: 'linear',
-            display: true,
-            position: 'left'
-          }
-        ]
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    ctrl.allSeries = Object.keys(groupedData);
+    ctrl.keys = [];
+
+    ctrl.newClaim = {}
+    ctrl.groupOptions.forEach((option) => {
+      ctrl.newClaim[option] = "";
+    });
+    ctrl.checkAll();
+    ctrl.loadGraph(groupedData);
+  }
+
+  ctrl.refreshGraph = () => {
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    ctrl.allSeries = Object.keys(groupedData);
+    ctrl.loadGraph(groupedData);
+  }
+
+  ctrl.regroup = () => {
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    ctrl.allSeries = Object.keys(groupedData);
+    ctrl.checkAll();
+    ctrl.loadGraph(groupedData);
+  }
+
+  ctrl.addData = () => {
+    for (let option in ctrl.newClaim) {
+      if (option === "") {
+        ctrl.newClaim[option] = "Unknown"
       }
     }
-    ctrl.loadGraph();
-    ctrl.refreshGraph = () => {
-      ctrl.loadGraph();
+    ctrl.values.claims.push(ctrl.newClaim);
+    ctrl.refreshGraph();
+    console.log('New Claim Saved!');
+  }
+
+  ctrl.checkAll = () => {
+    ctrl.keys = angular.copy(ctrl.allSeries);
+  }
+
+  ctrl.uncheckAll = () => {
+    ctrl.keys = [];
+  }
+
+  ctrl.toggleAllKeys = () => {
+    if (ctrl.keys.length > 0){
+      ctrl.uncheckAll();
+    } else {
+      ctrl.checkAll();
+    }
+    ctrl.refreshGraph();
+  }
+
+  ctrl.toggleKeys = (key) => {
+    let indx = ctrl.keys.indexOf(key);
+    if (indx > -1) {
+      ctrl.keys.splice(indx, 1);
+    } else {
+      ctrl.keys.push(key);
+    }
+    ctrl.refreshGraph();
+  }
+
+  ctrl.addAverages = (configuredData) => {
+    let filteredData = $filter('selectKeys')(configuredData, ctrl.allSeries);
+    let data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+    let  averages = []  //calculate averages across all keys
+    for (let i = 0; i < ctrl.labels.length; i++) {
+      let vals = []
+      data.forEach((dataset) => {
+        vals.push(parseFloat(dataset[i]));
+      });
+      averages.push(jStat.mean(vals).toFixed(2))
+    }
+    ctrl.data.push(averages);
+    ctrl.series.push("Average (All " + ctrl.groupType + "s)");
+  }
+
+  ctrl.loadGraph = (groupedData) => {
+    if (ctrl.values.claims !== null) {
+      ctrl.dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
+      let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
+      let filteredData = $filter('selectKeys')(configuredData, ctrl.keys); //only display desired keys
+
+      if (ctrl.type === 'line' || ctrl.type === 'line-average') {
+        ctrl.labels = GraphService.setLabels(ctrl.dateRange);
+        if (ctrl.type === 'line-average') {
+          ctrl.data = GraphService.setAverageValues(ctrl.dateRange, filteredData);
+        } else {
+          ctrl.data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+        }
+        ctrl.series = GraphService.setSeries(filteredData);
+        ctrl.addAverages(configuredData);
+        ctrl.options = {
+          title: {
+            display: true,
+            text: (ctrl.type === 'line') ? 'Total Values Per Month' : 'Average Values Per Month',
+            fontSize: 16
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                callback: (value) => {
+                  return '$' + value;
+                }
+              },
+              scaleLabel: {
+                display: true,
+                labelString: (ctrl.type === 'line') ? 'Total Claim Values' : 'Average Claim Values',
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Month'
+              }
+            }]
+          },
+          tooltips: {
+            position: 'nearest',
+            filter: (tooltipItem) => {
+              if (tooltipItem.yLabel > 0) return tooltipItem
+              return
+            },
+            callbacks: {
+              title: (tooltipItems) => {
+                let month = tooltipItems[0].xLabel.split(", ")
+                return months[month[0]-1] + ", " + month[1]
+              },
+              label: (tooltipItem) => {
+                return ctrl.series[tooltipItem.datasetIndex] + ": $" + tooltipItem.yLabel;
+              }
+            }
+          }
+        }
+      }
+      else if (ctrl.type === 'bar') {
+        ctrl.labels = months;
+        ctrl.series = GraphService.setSeries(filteredData);
+
+        let data = GraphService.setCountAverages(ctrl.labels, filteredData)
+        if (data[0].length > 0) {
+          ctrl.data = data[0]
+        } else {
+          ctrl.data = [[0]]
+        }
+        ctrl.options = {
+          title: {
+            display: true,
+            text: 'Average Claims Per Month',
+            fontSize: 16
+          },
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Average Number of Claims'
+              }
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Month'
+              }
+            }]
+          },
+          tooltips: {
+            position: 'nearest',
+            filter: (tooltipItem) => {
+              if (tooltipItem.yLabel > 0) return tooltipItem
+              return
+            },
+            callbacks: {
+              label: (tooltipItem) => {
+                let avgLabel = ctrl.series[tooltipItem.datasetIndex] + ": Average " + tooltipItem.yLabel
+                let stdevLabel = "StdDev " + data[1][tooltipItem.datasetIndex][tooltipItem.index]
+                return avgLabel + " | " + stdevLabel;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

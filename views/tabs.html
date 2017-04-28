@@ -1,0 +1,13 @@
+<div class="tabs" ng-controller="TabsController as tabs">
+  <md-tabs md-selected="selectedIndex" md-dynamic-height md-border-bottom>
+    <md-tab ng-repeat="tab in tabs"
+            ng-disabled="tab.disabled"
+            label="{{tab.title}}">
+        <md-tab-body>
+
+          <customgraph type="{{tab.content}}"></customgraph>
+
+        </md-tab-body>
+    </md-tab>
+  </md-tabs>
+</div>

@@ -15,6 +15,9 @@ function groupBy() {
       }
     } else { //if not Incident Date
       for (let i = 0; i < claims.length; i++){
+        if (claims[i][param] === '-') {
+          claims[i][[param]] = 'Unknown';
+        }
         if (!result[claims[i][param]]) {
           result[ claims[i][param] ] = [];
         }
