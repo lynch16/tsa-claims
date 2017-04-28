@@ -27,6 +27,24 @@ function GraphService($filter) {
     return extractedData
   }
 
+  const setAverageValues = (dateRange, data) => {
+    let extractedData = [];
+    data.forEach((series) => {
+      let results = []
+      for (let key in series) {  //key is airline, airport, etc.
+        dateRange.forEach((date) => {
+          if (!!series[key][date]){ //see if that airline has a value for that month
+            results.push(jStat.mean(series[key][date]).toFixed(2));
+          } else {
+            results.push(0) //otherwise, send 0
+          }
+        })
+      }
+      extractedData.push(results) //build nested array
+    });
+    return extractedData
+  }
+
   const setCountAverages = (labels, data) => {
     let avgCounts = [];
     let stdDevs = [];
@@ -42,7 +60,6 @@ function GraphService($filter) {
             }
           }
           let avg, stdev;
-          console.log(monthlyCounts.length);
           if (monthlyCounts.length > 0) {
             avg = jStat.mean(monthlyCounts).toFixed(2)
             stdev = jStat.stdev(monthlyCounts).toFixed(2)
@@ -120,6 +137,7 @@ function GraphService($filter) {
   return {
     setSeries: setSeries,
     setTotalValues: setTotalValues,
+    setAverageValues: setAverageValues,
     setCountAverages: setCountAverages,
     setLabels: setLabels,
     loadDateRange: loadDateRange,
