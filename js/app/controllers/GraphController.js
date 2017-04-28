@@ -11,11 +11,14 @@ function GraphController($filter, ClaimsDataService, GraphService) {
       let dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
       let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
       let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
+      let allSeries = GraphService.setSeries(configuredData);
+      ctrl.keys = ctrl.keys || allSeries;
+      configuredData = $filter('selectKeys')(configuredData, ctrl.keys)
 
       if (ctrl.type === 'line') {
         ctrl.labels = GraphService.setLabels(dateRange);
-        series = GraphService.setSeries(configuredData);
         data = GraphService.setTotalValues(dateRange, configuredData);
+        series = GraphService.setSeries(configuredData);
 
         let  averages = []  //calculate averages across all keys
         for (let i = 0; i < ctrl.labels.length; i++) {
