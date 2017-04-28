@@ -14,10 +14,9 @@
 </div>
 
 <div class="legend">
-  <input type="text" name="seriesFilter" ng-model="ctrl.seriesFilter"/>
-  <ul ng-repeat="s in ctrl.series | filter: ctrl.seriesFilter">
-    <li>{{s}}</li>
-  </ul>
+  <label ng-repeat="s in ctrl.series">
+    <input type="checkbox" checklist-model="ctrl.graph.keys" checklist-value="s"/>{{s}}
+  </label>
 </div>
 
 <form ng-submit="ctrl.addData()">
