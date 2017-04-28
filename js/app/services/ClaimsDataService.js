@@ -14,15 +14,14 @@ function ClaimsDataService($q, $filter) {
   }
 
   const waitData = () => {      //returns a promise
-    let deferred = $q.defer();
-    setTimeout(() => {
-      if (true) {
-        deferred.resolve(data);
-      } else {
-        deferred.reject(console.log('err'));
-      }
-    }, 1000);
-    return deferred.promise;
+    Promise.resolve(data.claims)
+      .then((data) => {
+        return data
+      })
+    // let deferred = $q.defer();
+    //     deferred.resolve(data.claims)
+    //     deferred.reject(console.log('err'));
+    // return deferred.promise;
   }
 
   const getData = () => {
