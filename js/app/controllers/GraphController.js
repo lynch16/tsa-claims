@@ -25,6 +25,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
 
   ctrl.refreshGraph = () => {
     let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    ctrl.allSeries = Object.keys(groupedData);
     ctrl.loadGraph(groupedData);
   }
 
@@ -113,7 +114,8 @@ function GraphController($filter, ClaimsDataService, GraphService) {
             }]
           }
         }
-      } else if (ctrl.type === 'bar') {
+      }
+      else if (ctrl.type === 'bar') {
         ctrl.labels = months;
         ctrl.series = GraphService.setSeries(filteredData);
 
