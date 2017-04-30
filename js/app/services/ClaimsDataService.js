@@ -13,6 +13,18 @@ function ClaimsDataService($q, $filter) {
     data.claims = claims;
   }
 
+  const waitData = () => {
+    let deferred = $q.defer();
+    setTimeout(() => {
+      if (data.claims !== null) {
+        deferred.resolve(data);
+      } else {
+        deferred.reject(console.log('data loading timed out!'));
+      }
+    }, 1000);
+    return deferred.promise;
+  }
+
   const getData = () => {
     return data;
   }
@@ -20,7 +32,8 @@ function ClaimsDataService($q, $filter) {
   return {
     data: data,
     getData: getData,
-    loadData: loadData
+    loadData: loadData,
+    waitData: waitData
   }
 }
 

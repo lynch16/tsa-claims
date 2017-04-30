@@ -1,4 +1,4 @@
-function WorkbookService($http, ClaimsDataService) {
+function WorkbookService(ClaimsDataService) {
 
   const loadLocalData = (fileLocation) => { //load XLS data from local file for when app starts
     /* set up XMLHttpRequest */
@@ -19,7 +19,7 @@ function WorkbookService($http, ClaimsDataService) {
       /* Call XLS */
       const workbook = XLS.read(bstr, {type:"binary"});
 
-      read(workbook);
+      return read(workbook);
     }
     oReq.send();
   }
@@ -33,6 +33,7 @@ function WorkbookService($http, ClaimsDataService) {
         console.log('data loaded');
       }
     });
+    return ClaimsDataService.getData();
   }
 
   return {

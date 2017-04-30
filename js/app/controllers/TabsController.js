@@ -1,4 +1,4 @@
-function TabsController($scope, ClaimsDataService) {
+function TabsController(values, ClaimsDataService) {
 
   let tabs = [
       { title: 'Total Value', content: 'line' },
@@ -7,12 +7,10 @@ function TabsController($scope, ClaimsDataService) {
     ],
     selected = null,
     previous = null;
-  $scope.tabs = tabs;
-  $scope.selectedIndex = 1;
-  $scope.$watch('selectedIndex', (current, old) => {
-    previous = selected;
-    selected = tabs[current];
-  });
+  this.$onInit = () => {
+    this.tabs = tabs;
+    this.selectedIndex = 1;
+  }
 }
 
 angular

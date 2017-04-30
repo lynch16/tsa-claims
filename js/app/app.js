@@ -6,7 +6,12 @@ angular
       .state('root', {
         url: '/',
         templateUrl: 'views/tabs.html',
-        controller: 'TabsController as tabs'
+        controller: 'TabsController as tabs',
+        resolve: {
+          values: (ClaimsDataService) => {
+            return ClaimsDataService.waitData();
+          }
+        }
       })
       $urlRouterProvider.otherwise('/');
   })

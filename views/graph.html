@@ -1,5 +1,5 @@
 <div class="graph">
-  <div class= "col-sm-9 pull-right" ng-switch on="tab.content" ng-if="ctrl.values.claims.length > 0">
+  <div class= "col-lg-9 pull-right" ng-switch on="tab.content" ng-if="ctrl.values.claims.length > 0">
     <div ng-switch-when="line">
       <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"
         chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick" ng-cloak>
@@ -18,14 +18,15 @@
     </div>
   </div>
 
-  <div class="col-sm-3 pull-left legend">
+  <div class="col-lg-3 pull-left legend">
     <label>Data grouped by: </label>
-    <select ng-model="ctrl.groupType" ng-options="f for f in ctrl.groupOptions" ng-change="ctrl.regroup()"></select>
+    <select ng-model="ctrl.groupType" ng-options="f for f in ctrl.groupOptions" ng-change="ctrl.regroup()"></select><br>
     <input type="checkbox" name="toggleAll" ng-checked="ctrl.keys.length" ng-click="ctrl.toggleAllKeys()">
     <label>View/Hide All {{ctrl.groupType}}s</label> <br>
     <input type="text" ng-model="ctrl.selectSeries" placeholder="Search {{ctrl.groupType}}s" name="selectSeries"/>
     <ul ng-repeat="seriesName in ctrl.allSeries | filter: ctrl.selectSeries">
       <input type="checkbox"
+             name="{{seriesName}}"
              value="{{seriesName}}"
              ng-checked="ctrl.keys.indexOf(seriesName) + 1"
              ng-click="ctrl.toggleKeys(seriesName)" />

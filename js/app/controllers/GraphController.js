@@ -110,6 +110,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
             ctrl.data = data[0];
           } else {
             ctrl.data = [[0]]
+            console.log('No data');
           }
         } else {
           ctrl.labels = GraphService.setLabels(ctrl.dateRange);
@@ -175,7 +176,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
         ctrl.options = {
           title: {
             display: true,
-            text: 'Average Claims Per Month',
+            text: "Average Claims Per Month (2010 - 2013)",
             fontSize: 16
           },
           scales: {
