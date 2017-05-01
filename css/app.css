@@ -6,6 +6,7 @@
 }
 canvas {
   min-height: 300px;
+  min-width: 300px;
 }
 .graph {
   max-height: 500px;
