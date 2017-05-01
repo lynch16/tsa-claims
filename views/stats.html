@@ -1,12 +1,12 @@
-<div class="stats col-md-12">
-  Statistics
+<div class="col-md-12">
+  <h3>Statistics</h3>
   <md-tabs md-selected="selectedStats" md-dynamic-height md-border-bottom>
     <md-tab ng-repeat="tab in ctrl.statTabs"
             ng-disabled="tab.disabled"
             label="{{tab.title}}">
         <md-tab-body>
 
-          <div ng-switch="tab.content">
+          <div class="stats" ng-switch="tab.content">
             <div ng-switch-when="global">
               <ng-include src="'views/stats/global.html'"></ng-include>
             </div>

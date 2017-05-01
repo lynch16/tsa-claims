@@ -19,6 +19,11 @@ canvas {
 .stats {
   overflow: scroll;
 }
+table th {
+  white-space: nowrap;
+  overflow: visible;
+}
+
 .workbook {
   background-color: rgba(224, 224, 224, 0.5);
   border: 1px solid black;
