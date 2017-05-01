@@ -4,7 +4,7 @@ function selectKeys() {
     data.forEach((dataset) => {
       let setKey = Object.keys(dataset)[0] //each dataset should only have one key
       if (keys.indexOf(setKey) > -1) {
-        results.push(dataset)
+        results.push(dataset);
       }
     });
     return results;

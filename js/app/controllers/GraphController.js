@@ -4,50 +4,50 @@ function GraphController($filter, GraphService) {
 
   ctrl.$onInit = () => {
     if (ctrl.type === 'line'){
-      ctrl.groupType = ctrl.groupType || "Airline Name" //default grouping for each graph
+      ctrl.groupType = ctrl.groupType || "Airline Name"; //default grouping for each graph
     } else {
-      ctrl.groupType = ctrl.groupType || "Airport Code"
+      ctrl.groupType = ctrl.groupType || "Airport Code";
     }
-    ctrl.groupOptions = Object.keys(ctrl.values.claims[0])
+    ctrl.groupOptions = Object.keys(ctrl.values.claims[0]); //options for filtering the data
 
-    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
-    ctrl.allSeries = Object.keys(groupedData);
-    ctrl.keys = [];
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType);  //returns object containing claims grouped by 2nd param
+    ctrl.allSeries = Object.keys(groupedData); //save all series seperately for filtering
+    ctrl.keys = []; //keys to filter the views by
 
-    ctrl.newClaim = {}
-    ctrl.groupOptions.forEach((option) => {
+    ctrl.newClaim = {};
+    ctrl.groupOptions.forEach((option) => { //make empty fields for all claim fields
       ctrl.newClaim[option] = "";
     });
-    ctrl.checkAll();
+    ctrl.checkAll(); //default all keys visiable
     ctrl.loadGraph(groupedData);
   }
 
   ctrl.refreshGraph = () => {
-    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType); //make sure data is properly grouped before refreshing
     ctrl.allSeries = Object.keys(groupedData);
     ctrl.loadGraph(groupedData);
   }
 
-  ctrl.regroup = () => {
-    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType );  //returns object containing claims grouped by 2nd param
+  ctrl.regroup = () => { //before loading graph, re-enable all keys
+    let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType);
     ctrl.allSeries = Object.keys(groupedData);
     ctrl.checkAll();
     ctrl.loadGraph(groupedData);
   }
 
-  ctrl.addData = () => {
+  ctrl.addClaim = () => {
     for (let option in ctrl.newClaim) {
-      ctrl.newClaim['Claim Number'] = Math.random().toString().slice(2,15)
+      ctrl.newClaim['Claim Number'] = Math.random().toString().slice(2,15); //random 13 digit claim number
       if (ctrl.newClaim[option] === "") {
-        ctrl.newClaim[option] = "Unknown"
+        ctrl.newClaim[option] = "Unknown";
       }
     }
     ctrl.values.claims.push(ctrl.newClaim);
-    ctrl.regroup();
+    ctrl.regroup(); //if not regrouped, new claim will be defaulted filtered out
     console.log('New Claim Saved!');
   }
 
-  ctrl.checkAll = () => {
+  ctrl.checkAll = () => { //undo all key filters
     ctrl.keys = angular.copy(ctrl.allSeries);
   }
 
@@ -74,13 +74,12 @@ function GraphController($filter, GraphService) {
     ctrl.refreshGraph();
   }
 
-  ctrl.addAverages = (configuredData) => {
+  ctrl.addAverages = (configuredData) => { //add global averages to dataset
     let filteredData = $filter('selectKeys')(configuredData, ctrl.allSeries); //ignore key selection when calculating averages
-    let data;
-    data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
-    let  averages = []  //calculate averages across all keys
+    let data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+    let  averages = [];  //calculate averages across all keys
     for (let i = 0; i < ctrl.labels.length; i++) {
-      let vals = []
+      let vals = [];
       data.forEach((dataset) => {
         vals.push(parseFloat(dataset[i]));
       });
@@ -93,10 +92,9 @@ function GraphController($filter, GraphService) {
   ctrl.loadGraph = (groupedData) => {
     if (ctrl.values.claims !== null) {
       ctrl.dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
-      let configuredData  = GraphService.configureValues(groupedData) //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
+      let configuredData  = GraphService.configureValues(groupedData); //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
       let filteredData = $filter('selectKeys')(configuredData, ctrl.keys); //only display data from desired keys
 
-      let data;
       if (ctrl.type === 'line') {
         ctrl.labels = GraphService.setLabels(ctrl.dateRange);
         ctrl.data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
@@ -130,8 +128,8 @@ function GraphController($filter, GraphService) {
           tooltips: {
             position: 'nearest',
             filter: (tooltipItem) => {
-              if (tooltipItem.yLabel > 0) return tooltipItem
-              return
+              if (tooltipItem.yLabel > 0) return tooltipItem; //hide tooltip for series with no data at selected point
+              return;
             },
             itemSort: (a, b) => {
               return b.yLabel - a.yLabel;
@@ -153,11 +151,11 @@ function GraphController($filter, GraphService) {
         ctrl.labels = months;
         ctrl.series = GraphService.setSeries(filteredData);
 
-        data = GraphService.setCountAverages(ctrl.labels, filteredData)
+        let data = GraphService.setCountAverages(ctrl.labels, filteredData)
         if (data[0].length > 0) {
-          ctrl.data = data[0]
+          ctrl.data = data[0];
         } else {
-          ctrl.data = [[0]]
+          ctrl.data = [[0]]; //set data to 0 if no averages returned so that graph doesn't hide
         }
         ctrl.options = {
           title: {
@@ -182,11 +180,11 @@ function GraphController($filter, GraphService) {
           tooltips: {
             position: 'nearest',
             filter: (tooltipItem) => {
-              if (tooltipItem.yLabel > 0) return tooltipItem;
+              if (tooltipItem.yLabel > 0) return tooltipItem; //hide tooltip for series with no data at selected point
               return;
             },
             itemSort: (a, b) => {
-              return b.yLabel - a.yLabel;
+              return b.yLabel - a.yLabel; //sort desc by average
             },
             callbacks: {
               label: (tooltipItem) => {

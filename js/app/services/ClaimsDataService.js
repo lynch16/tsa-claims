@@ -7,7 +7,7 @@ function ClaimsDataService($q, $filter) {
     let claims = []
     claimsArray.forEach((claim) => {
       if (!isNaN(claim["Claim Number"])) { //remove any claims that don't have a real claim number
-        claims.push(claim)
+        claims.push(claim);
       }
     });
     data.claims = claims;

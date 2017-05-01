@@ -1,6 +1,6 @@
 function groupBy() {
   return (claims, param) => {
-    if (!(claims && param)) return;
+    if (!(claims && param)) return; //return if no claims or no grouping param
     let result = {};
     if (param === 'Incident Date') {
       for (let i = 0; i < claims.length; i++) {
@@ -21,7 +21,7 @@ function groupBy() {
         if (!result[claims[i][param]]) {
           result[ claims[i][param] ] = [];
         }
-        result[claims[i][param]].push(claims[i])
+        result[claims[i][param]].push(claims[i]);
       }
     }
     return result;

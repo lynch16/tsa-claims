@@ -12,26 +12,26 @@ function GraphService($filter) {
   const setTotalValues = (dateRange, data) => {
     let extractedData = [];
     data.forEach((series) => {
-      let results = []
+      let results = [];
       for (let key in series) {  //key is airline, airport, etc.
         dateRange.forEach((date) => {
           if (!!series[key][date]){ //see if that airline has a value for that month
             results.push(jStat.sum(series[key][date]).toFixed(2));
           } else {
-            results.push(0) //otherwise, send 0
+            results.push(0); //otherwise, send 0
           }
         })
       }
-      extractedData.push(results) //build nested array
+      extractedData.push(results); //build nested array
     });
-    return extractedData
+    return extractedData;
   }
 
   const setCountAverages = (labels, data) => {
     let avgCounts = [];
     let stdDevs = [];
     data.forEach((series) => {
-      let results = [ [], [] ]
+      let results = [ [], [] ];
       for (let key in series) {  //key is airline, airport, etc.
         for (let i = 0; i < labels.length; i++) { //for each month in labels
           let monthlyCounts = [];
@@ -43,20 +43,20 @@ function GraphService($filter) {
           }
           let avg, stdev;
           if (monthlyCounts.length > 0) {
-            avg = jStat.mean(monthlyCounts).toFixed(2)
-            stdev = jStat.stdev(monthlyCounts).toFixed(2)
+            avg = jStat.mean(monthlyCounts).toFixed(2);
+            stdev = jStat.stdev(monthlyCounts).toFixed(2);
           } else {                                          //keep zeros for months with no claims
             avg = 0;
             stdev = 0;
           }
-          results[0].push(avg)
-          results[1].push(stdev)
+          results[0].push(avg);
+          results[1].push(stdev);
         } //end labels loop
       }
-      avgCounts.push(results[0]) //array of averages
-      stdDevs.push(results[1]) //array of stdevs
+      avgCounts.push(results[0]); //array of averages
+      stdDevs.push(results[1]); //array of stdevs
     });
-    return [avgCounts, stdDevs] //return as nested array per ChartJS
+    return [avgCounts, stdDevs]; //return as nested array per ChartJS
   }
 
   const setLabels = (labels) => {
@@ -74,7 +74,7 @@ function GraphService($filter) {
       date2 = new Date(parseInt(b));
       if (date1 > date2) return 1;
       if (date2 > date1) return -1;
-      return 0
+      return 0;
     });
     let min = jStat.min(dates); //min of date range of claims
     let max = jStat.max(dates);

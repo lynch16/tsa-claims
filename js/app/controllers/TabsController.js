@@ -1,6 +1,6 @@
 function TabsController(values, ClaimsDataService) {
-  let tabsCtrl = this
-  tabsCtrl.values = values
+  let tabsCtrl = this;
+  tabsCtrl.values = values;
 
   let tabs = [
       { title: 'Total Value', content: 'line' },
