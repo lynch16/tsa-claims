@@ -100,7 +100,7 @@ function GraphController($filter, $window, GraphService) {
     if (ctrl.type === 'line') {
       data = GraphService.setTotalValues(ctrl.dateRange, configuredData);
     } else {
-      data = GraphService.setCountAverages(ctrl.labels, configuredData)[0];
+      data = GraphService.setTotalCounts(ctrl.labels, configuredData);
     }
     for (let i = 0; i < ctrl.labels.length; i++) {
       let vals = [];
@@ -121,7 +121,7 @@ function GraphController($filter, $window, GraphService) {
     if (ctrl.type === 'line') {
       data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
     } else {
-      data = GraphService.setCountAverages(ctrl.labels, filteredData)[0];
+      data = GraphService.setTotalCounts(ctrl.labels, filteredData)
     }
     for (let i = 0; i < ctrl.labels.length; i++) {
       let vals = [];
