@@ -8,3 +8,11 @@
   height: inherit;
   overflow: scroll;
 }
+
+.workbook {
+  background-color: rgba(224, 224, 224, 0.5);
+  border: 1px solid black;
+  text-align: center;
+  display: inline-block;
+  padding: 5px 10px;
+}

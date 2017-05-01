@@ -149,6 +149,9 @@ function GraphController($filter, ClaimsDataService, GraphService) {
               if (tooltipItem.yLabel > 0) return tooltipItem
               return
             },
+            itemSort: (a, b) => {
+              return b.yLabel - a.yLabel;
+            },
             callbacks: {
               title: (tooltipItems) => {
                 let month = tooltipItems[0].xLabel.split(", ") || tooltipItems[0].xLabel;
@@ -156,7 +159,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
                 return months[month[0]-1] + ", " + month[1];
               },
               label: (tooltipItem) => {
-
                 return ctrl.series[tooltipItem.datasetIndex] + ": $" + tooltipItem.yLabel;
               }
             }
@@ -176,7 +178,7 @@ function GraphController($filter, ClaimsDataService, GraphService) {
         ctrl.options = {
           title: {
             display: true,
-            text: "Average Claims Per Month (2010 - 2013)",
+            text: "Average Claims Per Month",
             fontSize: 16
           },
           scales: {
@@ -196,14 +198,17 @@ function GraphController($filter, ClaimsDataService, GraphService) {
           tooltips: {
             position: 'nearest',
             filter: (tooltipItem) => {
-              if (tooltipItem.yLabel > 0) return tooltipItem
-              return
+              if (tooltipItem.yLabel > 0) return tooltipItem;
+              return;
+            },
+            itemSort: (a, b) => {
+              return b.yLabel - a.yLabel;
             },
             callbacks: {
               label: (tooltipItem) => {
-                let avgLabel = ctrl.series[tooltipItem.datasetIndex] + ": Average " + tooltipItem.yLabel
-                let stdevLabel = "StdDev " + data[1][tooltipItem.datasetIndex][tooltipItem.index]
-                return avgLabel + " | " + stdevLabel;
+                let avgLabel = "Average " + tooltipItem.yLabel;
+                let stdevLabel = "StdDev " + data[1][tooltipItem.datasetIndex][tooltipItem.index];
+                return ctrl.series[tooltipItem.datasetIndex] + ": " + avgLabel + " | " + stdevLabel;
               }
             }
           }

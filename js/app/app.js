@@ -16,5 +16,5 @@ angular
       $urlRouterProvider.otherwise('/');
   })
   .run(function(WorkbookService){
-    WorkbookService.loadLocalData('data/claims-2014.xls');
+    WorkbookService.loadLocalData('data/claims-2010-2013_0.xls');
   })
