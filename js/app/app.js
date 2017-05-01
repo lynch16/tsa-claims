@@ -6,7 +6,7 @@ angular
       .state('root', {
         url: '/',
         templateUrl: 'views/tabs.html',
-        controller: 'TabsController as tabs',
+        controller: 'TabsController as tabsCtrl',
         resolve: {
           values: (ClaimsDataService) => {
             return ClaimsDataService.waitData();

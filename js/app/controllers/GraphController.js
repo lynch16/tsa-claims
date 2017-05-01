@@ -3,7 +3,6 @@ function GraphController($filter, ClaimsDataService, GraphService) {
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   ctrl.$onInit = () => {
-    ctrl.values = ClaimsDataService.getData();
     if (ctrl.type === 'line'){
       ctrl.groupType = ctrl.groupType || "Airline Name" //default grouping for each graph
     } else {

@@ -1,5 +1,6 @@
 function TabsController(values, ClaimsDataService) {
-  this.values = values
+  let tabsCtrl = this
+  tabsCtrl.values = values
 
   let tabs = [
       { title: 'Total Value', content: 'line' },
@@ -8,9 +9,9 @@ function TabsController(values, ClaimsDataService) {
     ],
     selected = null,
     previous = null;
-  this.$onInit = () => {
-    this.tabs = tabs;
-    this.selectedIndex = 1;
+  tabsCtrl.$onInit = () => {
+    tabsCtrl.tabs = tabs;
+    tabsCtrl.selectedIndex = 1;
   }
 }
 
