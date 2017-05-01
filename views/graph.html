@@ -1,5 +1,5 @@
-<div class="graph">
-  <div ng-switch on="tab.content" ng-if="ctrl.values.claims.length > 0">
+<div class="content">
+  <div class="graph" ng-switch="tab.content" ng-if="ctrl.values.claims.length > 0">
     <div class= "col-md-9 pull-right" ng-switch-when="line">
       <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"
         chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick" ng-cloak>

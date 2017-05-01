@@ -2,6 +2,7 @@ function GraphController($filter, GraphService) {
   let ctrl = this;
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+
   ctrl.$onInit = () => {
     if (ctrl.type === 'line'){
       ctrl.groupType = ctrl.groupType || "Airline Name"; //default grouping for each graph
@@ -13,6 +14,14 @@ function GraphController($filter, GraphService) {
     let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType);  //returns object containing claims grouped by 2nd param
     ctrl.allSeries = Object.keys(groupedData); //save all series seperately for filtering
     ctrl.keys = []; //keys to filter the views by
+    ctrl.statTabs = [
+      { title: 'All ' + ctrl.groupType + "s",
+        content: 'global',
+      },
+      { title: 'Filtered ' + ctrl.groupType + "s",
+        content: 'local',
+      }
+    ]
 
     ctrl.newClaim = {};
     ctrl.groupOptions.forEach((option) => { //make empty fields for all claim fields
@@ -74,18 +83,16 @@ function GraphController($filter, GraphService) {
     ctrl.refreshGraph();
   }
 
-  ctrl.calcStats = (configuredData) => { //add global averages to dataset
-    ctrl.stats = [];
-    let filteredData = $filter('selectKeys')(configuredData, ctrl.allSeries); //ignore key selection when calculating averages
+  ctrl.calcGlobalStats = (configuredData) => { //add global averages to dataset
+    ctrl.globalStats = [];
     let data;
     let averages = [];  //calculate averages across all keys
     let stdDevs = [];
     if (ctrl.type === 'line') {
-      data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+      data = GraphService.setTotalValues(ctrl.dateRange, configuredData);
     } else {
-      data = GraphService.setCountAverages(ctrl.labels, filteredData)[0];
+      data = GraphService.setCountAverages(ctrl.labels, configuredData)[0];
     }
-    console.log(data);
     for (let i = 0; i < ctrl.labels.length; i++) {
       let vals = [];
       data.forEach((dataset) => {
@@ -94,10 +101,32 @@ function GraphController($filter, GraphService) {
       averages.push(jStat.mean(vals).toFixed(2));
       stdDevs.push(jStat.stdev(vals).toFixed(2));
     }
-    ctrl.data.push(averages);
-    ctrl.series.push("Average (All " + ctrl.groupType + "s)");
-    ctrl.stats.push(averages, stdDevs);
-    console.log(ctrl.stats);
+    ctrl.globalStats.push(averages, stdDevs);
+  }
+
+  ctrl.calcLocalStats = (filteredData) => { //add global averages to dataset
+    ctrl.localStats = []; //declare here so that it is rewritten with every filter.
+    let data;
+    let averages = [];  //calculate averages across all keys
+    let stdDevs = [];
+    if (ctrl.type === 'line') {
+      data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+    } else {
+      data = GraphService.setCountAverages(ctrl.labels, filteredData)[0];
+    }
+    for (let i = 0; i < ctrl.labels.length; i++) {
+      let vals = [];
+      if (data.length === 0) {
+        vals = [0];
+      } else {
+        data.forEach((dataset) => {
+          vals.push(parseFloat(dataset[i]));
+        });
+      }
+      averages.push(jStat.mean(vals).toFixed(2));
+      stdDevs.push(jStat.stdev(vals).toFixed(2));
+    }
+    ctrl.localStats.push(averages, stdDevs);
   }
 
   ctrl.loadGraph = (groupedData) => {
@@ -108,9 +137,15 @@ function GraphController($filter, GraphService) {
 
       if (ctrl.type === 'line') {
         ctrl.labels = GraphService.setLabels(ctrl.dateRange);
-        ctrl.data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+        let data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+        if (data[0]) {
+          ctrl.data = data;
+        } else {
+          ctrl.data = [[0]]; //set data to 0 if no averages returned so that graph doesn't hide
+        }
         ctrl.series = GraphService.setSeries(filteredData);
-        ctrl.calcStats(configuredData);
+        ctrl.calcGlobalStats(configuredData);
+        ctrl.calcLocalStats(filteredData);
         ctrl.options = {
           title: {
             display: true,
@@ -175,7 +210,8 @@ function GraphController($filter, GraphService) {
         } else {
           ctrl.data = [[0]]; //set data to 0 if no averages returned so that graph doesn't hide
         }
-        ctrl.calcStats(configuredData);
+        ctrl.calcGlobalStats(configuredData);
+        ctrl.calcLocalStats(filteredData);
         ctrl.options = {
           title: {
             display: true,

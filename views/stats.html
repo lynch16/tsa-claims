@@ -1,18 +1,21 @@
-<div class="stats">
-  <h4>Global Statistics, All {{ctrl.groupType}}s</h4>
+<div class="stats col-md-12">
+  Statistics
+  <md-tabs md-selected="selectedStats" md-dynamic-height md-border-bottom>
+    <md-tab ng-repeat="tab in ctrl.statTabs"
+            ng-disabled="tab.disabled"
+            label="{{tab.title}}">
+        <md-tab-body>
 
-  <table class="table table-striped">
-    <tr>
-      <th></th>
-      <th ng-repeat="label in ctrl.labels">{{label}}</th>
-    </tr>
-    <tr>
-      <td>Averages</td>
-      <td ng-repeat="stat in ctrl.stats[0] track by $index">{{stat}}</td>
-    </tr>
-    <tr>
-      <td>Standard Deviation</td>
-      <td ng-repeat="stat in ctrl.stats[1] track by $index">{{stat}}</td>
-    </tr>
-  </table>
+          <div ng-switch="tab.content">
+            <div ng-switch-when="global">
+              <ng-include src="'views/stats/global.html'"></ng-include>
+            </div>
+            <div ng-switch-when="local">
+              <ng-include src="'views/stats/local.html'"></ng-include>
+            </div>
+
+        </md-tab-body>
+    </md-tab>
+  </md-tabs>
+
 </div>
