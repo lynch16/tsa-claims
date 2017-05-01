@@ -24,7 +24,7 @@ function ClaimsDataService($q, $filter) {
         } else {
           deferred.reject(console.log('data loading timed out!'));
         }
-      }, 1000);
+      }, 3000);
     }
     return deferred.promise;
   }
