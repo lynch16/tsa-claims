@@ -5,11 +5,16 @@ angular
     $stateProvider
       .state('root', {
         url: '/',
-        templateUrl: 'views/tabs.html',
-        controller: 'TabsController as tabs'
+        templateUrl: 'views/root.html',
+        controller: 'TabsController as tabsCtrl',
+        resolve: {
+          values: (ClaimsDataService) => {
+            return ClaimsDataService.waitData();
+          }
+        }
       })
       $urlRouterProvider.otherwise('/');
   })
   .run(function(WorkbookService){
-    WorkbookService.loadLocalData('data/claims-2014.xls');
+    WorkbookService.loadLocalData('data/claims-2010-2013_0.xls');
   })

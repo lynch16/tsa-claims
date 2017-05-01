@@ -7,10 +7,26 @@ function ClaimsDataService($q, $filter) {
     let claims = []
     claimsArray.forEach((claim) => {
       if (!isNaN(claim["Claim Number"])) { //remove any claims that don't have a real claim number
-        claims.push(claim)
+        claims.push(claim);
       }
     });
     data.claims = claims;
+  }
+
+  const waitData = () => {
+    let deferred = $q.defer();
+    if (data.claims !== null) { //resolve immediately if data already loaded
+      deferred.resolve(data);
+    } else {
+      setTimeout(() => {
+        if (data.claims !== null) {
+          deferred.resolve(data);
+        } else {
+          deferred.reject(console.log('data loading timed out!'));
+        }
+      }, 1000);
+    }
+    return deferred.promise;
   }
 
   const getData = () => {
@@ -20,7 +36,8 @@ function ClaimsDataService($q, $filter) {
   return {
     data: data,
     getData: getData,
-    loadData: loadData
+    loadData: loadData,
+    waitData: waitData
   }
 }
 

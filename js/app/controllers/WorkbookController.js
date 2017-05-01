@@ -1,9 +1,8 @@
-function WorkbookController($scope, WorkbookService) {
-  $scope.read = (workbook) => {
+function WorkbookController(WorkbookService) {
+  this.read = (workbook) => {
     WorkbookService.read(workbook);
-    $scope.$apply();
   }
-  $scope.error = (err) => console.log(err);
+  this.error = (err) => console.log(err);
 }
 
 angular

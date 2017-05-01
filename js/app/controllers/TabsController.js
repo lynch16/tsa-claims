@@ -1,18 +1,18 @@
-function TabsController($scope, ClaimsDataService) {
+function TabsController(values, ClaimsDataService) {
+  let tabsCtrl = this;
+  tabsCtrl.values = values;
 
   let tabs = [
       { title: 'Total Value', content: 'line' },
-      { title: 'Average # Claims', content: 'bar' },
-      { title: 'Average $ Claims', content: 'line-average' }
+      { title: 'Average Claims', content: 'bar' },
+      { title: 'Report a Claim', content: 'new' }
     ],
     selected = null,
     previous = null;
-  $scope.tabs = tabs;
-  $scope.selectedIndex = 1;
-  $scope.$watch('selectedIndex', (current, old) => {
-    previous = selected;
-    selected = tabs[current];
-  });
+  tabsCtrl.$onInit = () => {
+    tabsCtrl.tabs = tabs;
+    tabsCtrl.selectedIndex = 1;
+  }
 }
 
 angular

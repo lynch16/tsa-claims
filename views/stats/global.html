@@ -1,0 +1,14 @@
+<table class="table table-striped table-bordered">
+  <tr>
+    <th></th>
+    <th ng-repeat="label in ctrl.labels">{{label}}</th>
+  </tr>
+  <tr>
+    <td>Averages</td>
+    <td ng-repeat="stat in ctrl.globalStats[0] track by $index">{{stat}}</td>
+  </tr>
+  <tr>
+    <td>Standard Deviation</td>
+    <td ng-repeat="stat in ctrl.globalStats[1] track by $index">{{stat}}</td>
+  </tr>
+</table>
