@@ -4,11 +4,22 @@
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="css/app.css">
+    <link rel="icon" href="/img/makerspace_favicon.gif">
     <title>TSA Claims</title>
   </head>
   <body>
     <div class="container body">
       <div ui-view></div>
+
+      <div id="page-loading">
+          TSA Claims Data Loading... Please Wait
+      </div>
+      <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function(event) {
+            $('#page-loading')
+                .fadeOut('slow');
+        });
+      </script>
 
       <div class="workbook" ng-controller='WorkbookController'>
         Import new TSA Claims dataset
