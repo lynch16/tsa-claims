@@ -1,0 +1,16 @@
+<h4>Global Statistics, All {{ctrl.groupType}}s</h4>
+
+<table class="table table-striped">
+  <tr>
+    <th></th>
+    <th ng-repeat="label in ctrl.labels">{{label}}</th>
+  </tr>
+  <tr>
+    <td>Averages</td>
+    <td ng-repeat="stat in ctrl.stats[0] track by $index">{{stat}}</td>
+  </tr>
+  <tr>
+    <td>Standard Deviation</td>
+    <td ng-repeat="stat in ctrl.stats[1] track by $index">{{stat}}</td>
+  </tr>
+</table>

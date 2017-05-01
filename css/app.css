@@ -16,7 +16,9 @@ canvas {
   max-height: 300px;
   overflow: scroll;
 }
-
+.stats {
+  overflow: scroll;
+}
 .workbook {
   background-color: rgba(224, 224, 224, 0.5);
   border: 1px solid black;

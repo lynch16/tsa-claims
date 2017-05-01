@@ -44,4 +44,8 @@
              {{seriesName}}
     </ul>
   </div>
+
+  <div ng-if="tab.content !== 'new'" class="stats">
+    <ng-include src="'views/stats.html'"></ng-include>
+  </div>
 </div>

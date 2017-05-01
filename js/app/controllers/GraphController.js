@@ -74,19 +74,30 @@ function GraphController($filter, GraphService) {
     ctrl.refreshGraph();
   }
 
-  ctrl.addAverages = (configuredData) => { //add global averages to dataset
+  ctrl.calcStats = (configuredData) => { //add global averages to dataset
+    ctrl.stats = [];
     let filteredData = $filter('selectKeys')(configuredData, ctrl.allSeries); //ignore key selection when calculating averages
-    let data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
-    let  averages = [];  //calculate averages across all keys
+    let data;
+    let averages = [];  //calculate averages across all keys
+    let stdDevs = [];
+    if (ctrl.type === 'line') {
+      data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
+    } else {
+      data = GraphService.setCountAverages(ctrl.labels, filteredData)[0];
+    }
+    console.log(data);
     for (let i = 0; i < ctrl.labels.length; i++) {
       let vals = [];
       data.forEach((dataset) => {
         vals.push(parseFloat(dataset[i]));
       });
-      averages.push(jStat.mean(vals).toFixed(2))
+      averages.push(jStat.mean(vals).toFixed(2));
+      stdDevs.push(jStat.stdev(vals).toFixed(2));
     }
     ctrl.data.push(averages);
     ctrl.series.push("Average (All " + ctrl.groupType + "s)");
+    ctrl.stats.push(averages, stdDevs);
+    console.log(ctrl.stats);
   }
 
   ctrl.loadGraph = (groupedData) => {
@@ -99,7 +110,7 @@ function GraphController($filter, GraphService) {
         ctrl.labels = GraphService.setLabels(ctrl.dateRange);
         ctrl.data = GraphService.setTotalValues(ctrl.dateRange, filteredData);
         ctrl.series = GraphService.setSeries(filteredData);
-        ctrl.addAverages(configuredData);
+        ctrl.calcStats(configuredData);
         ctrl.options = {
           title: {
             display: true,
@@ -164,6 +175,7 @@ function GraphController($filter, GraphService) {
         } else {
           ctrl.data = [[0]]; //set data to 0 if no averages returned so that graph doesn't hide
         }
+        ctrl.calcStats(configuredData);
         ctrl.options = {
           title: {
             display: true,
