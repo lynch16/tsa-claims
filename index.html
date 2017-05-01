@@ -7,23 +7,12 @@
     <title>TSA Claims</title>
   </head>
   <body>
-    <div class="app full">
-      <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-        <div class="container navbar-header">
-          <ul class='nav navbar-nav'>
-            <li role='navigation'><a ui-sref='root' class='navbar-link'>Graphs</a></li>
-            <li role='navigation'><a ui-sref='about' class='navbar-link'>About</a></li>
-          </ul>
-        </div>
-      </nav>
+    <div class="container body">
+      <div ui-view></div>
 
-      <div class="container body">
-        <div ui-view></div>
-
-        <div class="workbook" ng-controller='WorkbookController'>
-          Import new TSA Claims dataset
-          <js-xls onread="read" onerror="error"></js-xls>
-        </div>
+      <div class="workbook" ng-controller='WorkbookController'>
+        Import new TSA Claims dataset
+        <js-xls onread="read" onerror="error"></js-xls>
       </div>
     </div>
     <!--Core Angular components-->
