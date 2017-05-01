@@ -13,6 +13,14 @@ function GraphController($filter, $window, GraphService) {
     let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType);  //returns object containing claims grouped by 2nd param
     ctrl.allSeries = Object.keys(groupedData); //save all series seperately for filtering
     ctrl.keys = []; //keys to filter the views by
+    ctrl.statTabs = [ //define here so that it is refreshed with grouping changes
+      { title: 'All ' + ctrl.groupType + "s",
+        content: 'global',
+      },
+      { title: 'Filtered ' + ctrl.groupType + "s",
+        content: 'local',
+      }
+    ]
     ctrl.newClaim = {};
     ctrl.groupOptions.forEach((option) => { //make empty fields for all claim fields
       ctrl.newClaim[option] = "";
@@ -28,6 +36,14 @@ function GraphController($filter, $window, GraphService) {
   }
 
   ctrl.regroup = () => { //before loading graph, re-enable all keys
+    ctrl.statTabs = [
+      { title: 'All ' + ctrl.groupType + "s",
+        content: 'global',
+      },
+      { title: 'Filtered ' + ctrl.groupType + "s",
+        content: 'local',
+      }
+    ]
     let groupedData = $filter('groupBy')(ctrl.values.claims, ctrl.groupType);
     ctrl.allSeries = Object.keys(groupedData);
     ctrl.checkAll();
@@ -124,15 +140,6 @@ function GraphController($filter, $window, GraphService) {
 
   ctrl.loadGraph = (groupedData) => {
     if (ctrl.values.claims !== null) {
-      ctrl.statTabs = [ //define here so that it is refreshed with grouping changes
-        { title: 'All ' + ctrl.groupType + "s",
-          content: 'global',
-        },
-        { title: 'Filtered ' + ctrl.groupType + "s",
-          content: 'local',
-        }
-      ]
-
       ctrl.dateRange = GraphService.loadDateRange(ctrl.values.claims); //gather date range for all dates within dataset
       let configuredData  = GraphService.configureValues(groupedData); //[ {[airline name]: { [month]: [claimValue, claimValue] }}, ... ]
       let filteredData = $filter('selectKeys')(configuredData, ctrl.keys); //only display data from desired keys
