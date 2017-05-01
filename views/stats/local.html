@@ -1,4 +1,6 @@
 <table class="table table-striped table-bordered">
+  <caption ng-if="ctrl.type === 'line'">Statistics from Total Claim Values Per Month</caption>
+  <caption ng-if="ctrl.type === 'bar'">Statistics from Total Claim Counts Per Month</caption>
   <tr>
     <th></th>
     <th ng-repeat="label in ctrl.labels">{{label}}</th>
