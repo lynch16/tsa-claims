@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <div ng-if="tab.content !== 'new'" class="col-md-3 pull-left legend">
+  <div ng-if="tab.content !== 'new'" class="col-md-3 col-med-pull-left legend">
     <label>Data grouped by: </label>
     <select ng-model="ctrl.groupType" ng-options="f for f in ctrl.groupOptions" ng-change="ctrl.regroup()"></select><br>
     <input type="checkbox" name="toggleAll" ng-checked="ctrl.keys.length" ng-click="ctrl.toggleAllKeys()">
