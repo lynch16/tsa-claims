@@ -1,4 +1,4 @@
-function GraphController($filter, ClaimsDataService, GraphService) {
+function GraphController($filter, GraphService) {
   let ctrl = this;
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
