@@ -4,7 +4,6 @@ function TabsController(values, ClaimsDataService) {
   let tabs = [
       { title: 'Total Value', content: 'line' },
       { title: 'Average # Claims', content: 'bar' },
-      { title: 'Average $ Claims', content: 'line-average' },
       { title: 'Add a Claim', content: 'new' }
     ],
     selected = null,
