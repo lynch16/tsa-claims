@@ -27,12 +27,33 @@ function GraphService($filter) {
     return extractedData;
   }
 
+  const setTotalCounts = (labels, data) => {
+    let extractedData = [];
+    data.forEach((series) => {
+      let results = [];
+      for (let key in series) {  //key is specific airline, airport, etc.
+        for (let i = 0; i < labels.length; i++) {
+          let monthlyClaims = []
+          for (let date in series[key]) {
+            let month = new Date(parseInt(date)).getMonth();  //parse ms and store month
+            if (month === i){ //see if that airline has a value for that month
+              monthlyClaims.push(series[key][date].length);
+            }
+          }
+          results.push(jStat.sum(monthlyClaims)); //sum the counts for each month within the dataset
+        }
+      }
+      extractedData.push(results); //build nested array
+    });
+    return extractedData;
+  }
+
   const setCountAverages = (labels, data) => {
     let avgCounts = [];
     let stdDevs = [];
     data.forEach((series) => {
       let results = [ [], [] ];
-      for (let key in series) {  //key is airline, airport, etc.
+      for (let key in series) {  //key is specific airline, airport, etc.
         for (let i = 0; i < labels.length; i++) { //for each month in labels
           let monthlyCounts = [];
           for (let date in series[key]) {         //check all claims
@@ -118,6 +139,7 @@ function GraphService($filter) {
   return {
     setSeries: setSeries,
     setTotalValues: setTotalValues,
+    setTotalCounts: setTotalCounts,
     setCountAverages: setCountAverages,
     setLabels: setLabels,
     loadDateRange: loadDateRange,
