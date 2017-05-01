@@ -26,7 +26,7 @@ function ClaimsDataService($q, $filter) {
           setTimeout(() => {
             if (data.claims !== null) {
               deferred.resolve(data);
-            } else {
+            } else if (i === 2) {
               deferred.reject(console.log('data loading timed out!'));
             }
           }, 1000);
