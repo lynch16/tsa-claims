@@ -18,20 +18,13 @@ function ClaimsDataService($q, $filter) {
     if (data.claims !== null) { //resolve immediately if data already loaded
       deferred.resolve(data);
     } else {
-      for (let i = 0; i < 3; i++){
+      setTimeout(() => {
         if (data.claims !== null) {
           deferred.resolve(data);
-          break;
         } else {
-          setTimeout(() => {
-            if (data.claims !== null) {
-              deferred.resolve(data);
-            } else if (i === 2) {
-              deferred.reject(console.log('data loading timed out!'));
-            }
-          }, 1000);
+          deferred.reject(console.log('data loading timed out!'));
         }
-      }
+      }, 1000);
     }
     return deferred.promise;
   }
