@@ -19,7 +19,7 @@ function WorkbookService(ClaimsDataService) {
       /* Call XLS */
       const workbook = XLS.read(bstr, {type:"binary"});
 
-      return read(workbook);
+      read(workbook);
     }
     oReq.send();
   }
@@ -33,7 +33,6 @@ function WorkbookService(ClaimsDataService) {
         console.log('data loaded');
       }
     });
-    return ClaimsDataService.getData();
   }
 
   return {

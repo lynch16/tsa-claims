@@ -5,7 +5,7 @@ angular
     $stateProvider
       .state('root', {
         url: '/',
-        templateUrl: 'views/tabs.html',
+        templateUrl: 'views/root.html',
         controller: 'TabsController as tabsCtrl',
         resolve: {
           values: (ClaimsDataService) => {
