@@ -110,7 +110,10 @@ function GraphController($filter, GraphService) {
             yAxes: [{
               ticks: {
                 callback: (value) => {
-                  return '$' + value;
+                  return '$' + value.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  });
                 }
               },
               scaleLabel: {
@@ -141,7 +144,11 @@ function GraphController($filter, GraphService) {
                 return months[month[0]-1] + ", " + month[1];
               },
               label: (tooltipItem) => {
-                return ctrl.series[tooltipItem.datasetIndex] + ": $" + tooltipItem.yLabel;
+                return ctrl.series[tooltipItem.datasetIndex] + ": $" +
+                  tooltipItem.yLabel.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  });
               }
             }
           }
