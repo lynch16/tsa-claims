@@ -1,7 +1,6 @@
-function GraphController($filter, GraphService) {
+function GraphController($filter, $window, GraphService) {
   let ctrl = this;
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
 
   ctrl.$onInit = () => {
     if (ctrl.type === 'line'){
@@ -45,15 +44,18 @@ function GraphController($filter, GraphService) {
   }
 
   ctrl.addClaim = () => {
+    ctrl.newClaim['Claim Number'] = Math.random().toString().slice(2,15); //random 13 digit claim number
     for (let option in ctrl.newClaim) {
-      ctrl.newClaim['Claim Number'] = Math.random().toString().slice(2,15); //random 13 digit claim number
-      if (ctrl.newClaim[option] === "") {
+      if ((ctrl.newClaim[option] === "") && (option !== 'Claim Number')) {
         ctrl.newClaim[option] = "Unknown";
       }
     }
-    ctrl.values.claims.push(ctrl.newClaim);
-    ctrl.regroup(); //if not regrouped, new claim will be defaulted filtered out
-    console.log('New Claim Saved!');
+    ctrl.values.claims.push(angular.copy(ctrl.newClaim));
+    ctrl.regroup(); //regroup or new input will likely be filtered out by default
+    for (let option in ctrl.newClaim) { //clear form
+      ctrl.newClaim[option] = "";
+    }
+    $window.alert('New Claim Saved!');
   }
 
   ctrl.checkAll = () => { //undo all key filters
