@@ -1,17 +1,17 @@
 <div class="content">
   <div class="graph" ng-switch="tab.content" ng-if="ctrl.values.claims.length > 0">
-    <div class= "col-md-9 pull-right" ng-switch-when="line">
+    <div class= "col-md-9 col-md-pull-right" ng-switch-when="line">
       <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"
         chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick" ng-cloak>
       </canvas>
     </div>
 
-    <div class= "col-md-9 pull-right" ng-switch-when="bar">
+    <div class= "col-md-9 col-md-pull-right" ng-switch-when="bar">
       <canvas id="bar" class="chart chart-bar" chart-data="ctrl.data" chart-labels="ctrl.labels" chart-series="ctrl.series"  chart-options="ctrl.options" ng-cloak>
       </canvas>
     </div>
 
-    <div class= "col-md-9 pull-right" ng-switch-when="line-average">
+    <div class= "col-md-9 col-md-pull-right" ng-switch-when="line-average">
       <canvas id="line" class="chart chart-line" chart-data="ctrl.data" chart-labels="ctrl.labels"
         chart-series="ctrl.series" chart-options="ctrl.options" chart-dataset-override="ctrl.datasetOverride" chart-click="ctrl.onClick" ng-cloak>
       </canvas>
